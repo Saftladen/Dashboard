@@ -1,10 +1,8 @@
-const create = (client, slackUserId, slackData) =>
+const create = (client, slackData) =>
   client
-    .query("insert into users (slack_user_id, slack_data) VALUES ($1, $2) returning id", [
-      slackUserId,
-      slackData,
-    ])
+    .query("insert into users (name) VALUES ($1, $2) returning id", [slackData.user.name])
     .then(result => ({userId: result.rows[0].id}));
+// TODO: safe data in integrations
 
 const update = (client, userId, data) => {
   const keys = Object.keys(data);

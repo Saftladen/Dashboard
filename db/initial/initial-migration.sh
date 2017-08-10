@@ -12,6 +12,8 @@ psql saftboard <<EOF
   $(< schemas/countdowns.sql)
   $(< schemas/medias.sql)
   $(< schemas/placement_scores.sql)
+  $(< schemas/tokens.sql)
+  $(< schemas/integrations.sql)
 
   END;
 EOF
