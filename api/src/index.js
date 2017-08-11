@@ -8,6 +8,7 @@ import psql from "./middleware/psql";
 import actionRoutes from "./controllers/actions";
 import getterRoutes from "./controllers/getters";
 import slackRoutes from "./controllers/slack";
+import adminRoutes from "./controllers/admin";
 
 const server = new Hapi.Server({debug: {request: ["error", "uncaught"]}});
 server.connection({
@@ -40,6 +41,7 @@ server.register(
     actionRoutes,
     getterRoutes,
     slackRoutes,
+    adminRoutes,
     {
       register: Good,
       options: {

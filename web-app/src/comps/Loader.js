@@ -58,11 +58,19 @@ export class RawLoader extends React.Component {
     );
   }
 
-  renderError(err) {
+  renderError(err, spinnerPresence) {
     return (
-      <div>
-        {err.toString()}
-      </div>
+      <Ui.FullHeight
+        style={{opacity: 1 - spinnerPresence}}
+        css={{
+          textAlign: "center",
+          justifyContent: "center",
+          padding: "2em",
+          fontSize: "1.5em",
+        }}
+      >
+        {err}
+      </Ui.FullHeight>
     );
   }
 
@@ -77,7 +85,7 @@ export class RawLoader extends React.Component {
         {({spinnerPresence}) =>
           <Ui.FullHeight>
             {this.renderLoading(spinnerPresence)}
-            {error && this.renderError(error)}
+            {error && this.renderError(error, spinnerPresence)}
             {children &&
               <Ui.FullHeight style={{opacity: 1 - spinnerPresence}}>
                 {children}
@@ -88,14 +96,60 @@ export class RawLoader extends React.Component {
   }
 }
 
+export class ComponentLoader extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      loadedComp: null,
+    };
+    props.comp.then(
+      c => {
+        this.setState({loadedComp: c.__esModule ? c.default : c});
+      },
+      e => {
+        this.setState({error: e.toString()});
+      }
+    );
+  }
+
+  state = {
+    loadedComp: null,
+    error: null,
+  };
+
+  render() {
+    const {loadedComp: Comp, error} = this.state;
+    return (
+      <RawLoader isLoading={!Comp} error={error}>
+        {Comp && <Comp {...this.props.props} />}
+      </RawLoader>
+    );
+  }
+}
+
 export default class FetchLoader extends React.Component {
   render() {
-    const {url, children} = this.props;
+    const {url, children, onError} = this.props;
     return (
       <Fetch url={url}>
         {({isLoading, data, error, clearCache}) =>
-          <RawLoader isLoading={isLoading} error={error}>
+          console.log("error", error) ||
+          <RawLoader
+            isLoading={isLoading}
+            error={
+              error && onError && onError[error.status]
+                ? null
+                : error &&
+                  <span>
+                    <b>{error.status}</b> {error.message}
+                  </span>
+            }
+          >
             {data && children(data, clearCache)}
+            {error &&
+              onError &&
+              onError[error.status] &&
+              React.createElement(onError[error.status], {})}
           </RawLoader>}
       </Fetch>
     );

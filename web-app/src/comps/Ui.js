@@ -28,6 +28,7 @@ const rawButtonStyles = [
   }),
 ];
 
+/* eslint-disable jsx-a11y/anchor-has-content */
 const LinkOrButton = props =>
   "to" in props ? <Link {...props} /> : "href" in props ? <a {...props} /> : <button {...props} />;
 

@@ -81,8 +81,9 @@ export class FetchProvider extends React.Component {
         .then(res => res.json().then(jsonRes => ({isLoading: false, result: jsonRes, error: null})))
         .catch(err => {
           const errorMessage = err.message || `failed to fetch '${url}'`;
-          this.setState({errorState: {message: errorMessage, status: err.status}});
-          return {isLoading: false, result: null, error: errorMessage};
+          const errorState = {message: errorMessage, status: err.status};
+          this.setState({errorState});
+          return {isLoading: false, result: null, error: errorState};
         })
         .then(res => {
           this.setState(s => ({loadCount: s.loadCount - 1}));
