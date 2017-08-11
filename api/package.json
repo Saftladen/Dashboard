@@ -6,7 +6,7 @@
   "scripts": {
     "runDev": "babel-node src/index.js",
     "debugDev": "babel-node debug src/index.js",
-    "monitorDev": "nodemon --exec babel-node src/index.js",
+    "monitorDev": "nodemon src/index.js",
     "format": "prettier-eslint --write --print-width 100 \"src/**/*.js\"",
     "start": "npm run monitorDev",
     "test": "NODE_ENV=test jest",

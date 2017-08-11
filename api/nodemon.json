@@ -1,0 +1,8 @@
+{
+  "verbose": true,
+  "watch": "src/**/*.js",
+  "ignore": ["src/**/tests?/**/*"],
+  "execMap": {
+    "js": "babel-node"
+  }
+}
