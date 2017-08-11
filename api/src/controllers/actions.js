@@ -1,6 +1,4 @@
 import {wrapInTransaction} from "../middleware/psql";
-import Token from "../models/token";
-import User from "../models/user";
 
 const NAME = "actions";
 

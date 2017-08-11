@@ -27,7 +27,7 @@ const plugin = (server, options, next) => {
               }
             );
         } else {
-          reply({ok: false, error: "unauthenticated"}).code(401);
+          reply.continue();
         }
       }
     },

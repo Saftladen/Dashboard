@@ -1,4 +1,4 @@
-import Token from "../models/token";
+import Integration from "../models/integration";
 
 const NAME = "getters";
 
@@ -12,8 +12,15 @@ export const sqlRequest = (sql, getArgs, postProcess = noop) => (request, reply)
 const plugin = (server, options, next) => {
   server.route({
     method: "GET",
-    path: "/some-path",
-    handler: sqlRequest(`select * from users`),
+    path: "/public/home",
+    handler: (request, reply) =>
+      Promise.all([Integration.has(request.pg, Integration.Type.SlackTeam)]).then(
+        ([hasSlackTeam]) =>
+          reply({
+            hasSlackTeam,
+          }),
+        e => reply({ok: false, error: e}).code(400)
+      ),
   });
 
   next();

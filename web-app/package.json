@@ -3,14 +3,22 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "glamor": "^2.20.39",
+    "glamorous": "^4.1.0",
+    "js-cookie": "^2.1.4",
+    "prop-types": "^15.5.10",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
-    "react-scripts": "1.0.11"
+    "react-motion": "^0.5.0",
+    "react-router-dom": "^4.1.2",
+    "react-scripts": "1.0.11",
+    "typeface-source-sans-pro": "^0.0.35"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
-  }
+  },
+  "devDependencies": {}
 }

@@ -1,5 +1,50 @@
+html {
+  box-sizing: border-box;
+  transition-duration: .15s;
+  transition-timing-function: ease-out;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+  transition-duration: inherit;
+  transition-timing-function: inherit;
+  transition-property: none;
+}
+
 body {
   margin: 0;
   padding: 0;
-  font-family: sans-serif;
+  font-family: 'Source Sans Pro', sans-serif;
+  font-weight: 300;
+  background-color: #261c00;
+  color: #fff;
+  min-height: 100vh;
+  font-size: 2vw;
+  line-height: 1.2;
+}
+
+@media (max-width: 800px) {
+  body {
+    font-size: 16px;
+  }
+}
+
+a {
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin: 0;
 }
