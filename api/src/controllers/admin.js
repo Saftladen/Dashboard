@@ -1,4 +1,5 @@
 import Integration from "../models/integration";
+import {failOnNonAuth} from "../middleware/auth";
 
 const NAME = "admin";
 
@@ -10,17 +11,7 @@ export const sqlRequest = (sql, getArgs, postProcess = noop) => (request, reply)
     .then(r => reply(postProcess(r.rows)), r => reply(r).code(400));
 
 const plugin = (server, options, next) => {
-  server.ext(
-    "onPreHandler",
-    (request, reply) => {
-      if (request.userId) {
-        reply.continue();
-      } else {
-        reply({ok: false, error: "unauthenticated"}).code(401);
-      }
-    },
-    {sandbox: "plugin"}
-  );
+  failOnNonAuth(server);
 
   server.route({
     method: "GET",

@@ -4,6 +4,8 @@ create table placement_scores (
   decay_rate float not null,
   constant_until timestamp with time zone not null default now(),
   is_private boolean not null,
+  countdown_id int references countdowns(id),
+  media_id int references medias(id),
 
   creator_id int not null references users(id),
   created_at timestamp with time zone not null default now()

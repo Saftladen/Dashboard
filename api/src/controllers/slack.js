@@ -50,7 +50,9 @@ const plugin = (server, options, next) => {
                 )
         )
         .then(data => {
-          reply.redirect(`${process.env.CLIENT_HOST}/${data && `?${querystring.stringify(data)}`}`);
+          reply.redirect(
+            `${process.env.CLIENT_HOST}/${data ? `?${querystring.stringify(data)}` : ""}`
+          );
         }, e => console.log("e", e) || reply({ok: false, error: e}).code(400)),
   });
 

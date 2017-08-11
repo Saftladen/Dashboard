@@ -5,7 +5,6 @@ const createOrUpdate = (db, slackData) =>
       [slackData.user.name, slackData.user.id]
     )
     .then(result => result.rows[0].id);
-// TODO: safe data in integrations
 
 const update = (db, userId, data) => {
   const keys = Object.keys(data);
