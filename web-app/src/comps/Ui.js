@@ -12,7 +12,7 @@ const FullHeight = B.div({
 
 const rawButtonStyles = [
   {
-    display: "inline-block",
+    display: "block",
     textAlign: "center",
     width: "auto",
     border: "none",
@@ -31,11 +31,17 @@ const rawButtonStyles = [
 const LinkOrButton = props =>
   "to" in props ? <Link {...props} /> : "href" in props ? <a {...props} /> : <button {...props} />;
 
+const RawButton = B(LinkOrButton)(...rawButtonStyles, {
+  ":hover": {
+    backgroundColor: "rgba(255,255,255,0.2)",
+  },
+});
+
 const IconButton = B(LinkOrButton)(...rawButtonStyles, {
   padding: 10,
   borderRadius: "100%",
   ":hover": {
-    backgroundColor: "rgba(0,0,0,0.1)",
+    backgroundColor: "rgba(255,255,255,0.2)",
   },
 });
 
@@ -45,7 +51,7 @@ const TextButton = B(LinkOrButton)(...rawButtonStyles, {
   borderRadius: 5,
   textTransform: "uppercase",
   ":hover": {
-    backgroundColor: "rgba(0,0,0,0.02)",
+    backgroundColor: "rgba(255,255,255,0.2)",
   },
 });
 
@@ -55,7 +61,7 @@ const BorderButton = B(LinkOrButton)(...rawButtonStyles, {
   border: `2px solid ${col.accent}`,
   fontWeight: "bold",
   ":hover": {
-    backgroundColor: "rgba(0,0,0,0.02)",
+    backgroundColor: "rgba(255,255,255,0.2)",
   },
   ":active": {
     backgroundColor: col.accentActive,
@@ -115,4 +121,5 @@ export default {
   TextButton,
   BorderButton,
   Field,
+  RawButton,
 };

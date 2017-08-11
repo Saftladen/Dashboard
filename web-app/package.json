@@ -7,6 +7,7 @@
     "glamorous": "^4.1.0",
     "js-cookie": "^2.1.4",
     "prop-types": "^15.5.10",
+    "qs": "^6.5.0",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "react-motion": "^0.5.0",

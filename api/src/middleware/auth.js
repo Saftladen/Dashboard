@@ -6,29 +6,20 @@ const plugin = (server, options, next) => {
   server.ext({
     type: "onPreHandler",
     method: function(request, reply) {
-      if (request.path.startsWith("/public/")) {
-        reply.continue();
+      const token =
+        request.headers["x-auth-token"] ||
+        request.query["auth-token"] ||
+        request.params["auth-token"];
+      if (token) {
+        console.log("token", token);
+        Token.getVerifiedData(request.pg, Token.Type.AuthToken, token)
+          .then(({userId}) => {
+            request.userId = userId;
+            return;
+          })
+          .then(() => reply.continue(), () => reply.continue());
       } else {
-        const token =
-          request.headers["x-auth-token"] ||
-          request.query["auth-token"] ||
-          request.params["auth-token"];
-        if (token) {
-          Token.getVerifiedData(request.pg, Token.Type.AuthToken, token)
-            .then(({userId, accountId}) => {
-              request.userId = userId;
-              request.accountId = accountId;
-              return;
-            })
-            .then(
-              () => reply.continue(),
-              () => {
-                reply({ok: false, error: "unauthenticated"}).code(401);
-              }
-            );
-        } else {
-          reply.continue();
-        }
+        reply.continue();
       }
     },
   });

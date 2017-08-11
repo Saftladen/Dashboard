@@ -2,6 +2,12 @@ html {
   box-sizing: border-box;
   transition-duration: .15s;
   transition-timing-function: ease-out;
+  font-size: 2vw;
+  font-family: 'Source Sans Pro', sans-serif;
+  font-weight: 300;
+  background-color: #261c00;
+  color: #fff;
+  line-height: 1.2;
 }
 
 *,
@@ -13,22 +19,16 @@ html {
   transition-property: none;
 }
 
+@media (max-width: 800px) {
+  html {
+    font-size: 16px;
+  }
+}
+
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Source Sans Pro', sans-serif;
-  font-weight: 300;
-  background-color: #261c00;
-  color: #fff;
   min-height: 100vh;
-  font-size: 2vw;
-  line-height: 1.2;
-}
-
-@media (max-width: 800px) {
-  body {
-    font-size: 16px;
-  }
 }
 
 a {

@@ -49,7 +49,11 @@ export class FetchProvider extends React.Component {
 
   initialResult = url => {
     const cacheEntry = this.cache[url];
-    return {isLoading: true, result: (cacheEntry && cacheEntry.result) || null, error: null};
+    return {
+      isLoading: !(cacheEntry && cacheEntry.result),
+      result: (cacheEntry && cacheEntry.result) || null,
+      error: null,
+    };
   };
 
   register = (url, cb) => {
