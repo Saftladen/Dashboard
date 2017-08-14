@@ -14,5 +14,7 @@ psql -h 127.0.0.1 saftboard -U saftboard <<EOF
   $(< schemas/placement_scores.sql)
   $(< schemas/tokens.sql)
   $(< schemas/integrations.sql)
+
+  $(< ../views-and-functions/vw_top_placements.sql)
   END;
 EOF

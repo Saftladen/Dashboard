@@ -8,7 +8,7 @@ import DoAction from "./DoAction";
 const AddCountdown = () =>
   <DoAction
     name="create-countdown"
-    data={{label: "Mittag", isPrivate: false, endsAt: new Date(new Date() + 1000 * 3600)}}
+    data={{label: "Mittag", isPrivate: false, endsAt: new Date(new Date().getTime() + 1000 * 3600)}}
   >
     {({performFn, isLoading}) =>
       <form onSubmit={performFn}>
