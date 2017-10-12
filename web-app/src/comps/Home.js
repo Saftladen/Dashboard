@@ -6,6 +6,7 @@ import B from "glamorous";
 import qs from "qs";
 import * as auth from "../lib/auth";
 import AuthBar from "./AuthBar";
+import TileManager from "./TileManager";
 
 const HasSlackTeam = ({data, children}) =>
   data.hasSlackTeam
@@ -38,7 +39,7 @@ const Home = ({location}) => {
           <HasSlackTeam data={data}>
             <Ui.FullHeight>
               <AuthBar data={data} />
-              <div>Saftladen Dashboard</div>
+              <TileManager data={data} />
             </Ui.FullHeight>
           </HasSlackTeam>}
       </Loader>
