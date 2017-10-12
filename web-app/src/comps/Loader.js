@@ -26,13 +26,14 @@ const SpinG = B.g({
   animation: `${rotate} 2s infinite linear`,
 });
 
-export const Spinner = ({size = 75}) =>
+export const Spinner = ({size = 75}) => (
   <SpinContainer size={size} width="50" height="50" viewBox="-1 -1 39 39">
     <SpinG>
       <circle strokeOpacity=".25" cx="18" cy="18" r="18" />
       <path strokeOpacity=".5" d="M36 18c0-9.94-8.06-18-18-18" />
     </SpinG>
-  </SpinContainer>;
+  </SpinContainer>
+);
 
 const LoaderContainer = B.div({
   position: "absolute",
@@ -82,15 +83,15 @@ export class RawLoader extends React.Component {
           spinnerPresence: spring(isLoading ? 1 : 0, presets.stiff),
         }}
       >
-        {({spinnerPresence}) =>
+        {({spinnerPresence}) => (
           <Ui.FullHeight>
             {this.renderLoading(spinnerPresence)}
             {error && this.renderError(error, spinnerPresence)}
-            {children &&
-              <Ui.FullHeight style={{opacity: 1 - spinnerPresence}}>
-                {children}
-              </Ui.FullHeight>}
-          </Ui.FullHeight>}
+            {children && (
+              <Ui.FullHeight style={{opacity: 1 - spinnerPresence}}>{children}</Ui.FullHeight>
+            )}
+          </Ui.FullHeight>
+        )}
       </Motion>
     );
   }
@@ -132,17 +133,17 @@ export default class FetchLoader extends React.Component {
     const {url, children, onError} = this.props;
     return (
       <Fetch url={url}>
-        {({isLoading, data, error, clearCache}) =>
-          console.log("error", error) ||
+        {({isLoading, data, error, clearCache}) => (
           <RawLoader
             isLoading={isLoading}
             error={
               error && onError && onError[error.status]
                 ? null
-                : error &&
-                  <span>
-                    <b>{error.status}</b> {error.message}
-                  </span>
+                : error && (
+                    <span>
+                      <b>{error.status}</b> {error.message}
+                    </span>
+                  )
             }
           >
             {data && children(data, clearCache)}
@@ -150,7 +151,8 @@ export default class FetchLoader extends React.Component {
               onError &&
               onError[error.status] &&
               React.createElement(onError[error.status], {})}
-          </RawLoader>}
+          </RawLoader>
+        )}
       </Fetch>
     );
   }

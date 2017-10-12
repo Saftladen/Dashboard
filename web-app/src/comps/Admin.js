@@ -5,30 +5,35 @@ import Ui from "./Ui";
 import {SigninWithSlack} from "./AuthBar";
 import DoAction from "./DoAction";
 
-const AddCountdown = () =>
+const AddCountdown = () => (
   <DoAction
     name="create-countdown"
     data={{label: "Mittag", isPrivate: false, endsAt: new Date(new Date().getTime() + 1000 * 3600)}}
   >
-    {({performFn, isLoading}) =>
+    {({performFn, isLoading}) => (
       <form onSubmit={performFn}>
         <button disabled={isLoading}>Create Countdown</button>
-      </form>}
-  </DoAction>;
+      </form>
+    )}
+  </DoAction>
+);
 
-const ShowLogin = () =>
+const ShowLogin = () => (
   <Ui.FullHeight css={{minHeight: "100vh", alignItems: "center", justifyContent: "center"}}>
     <B.Div marginBottom="1em">You're not logged in</B.Div>
     <SigninWithSlack height="1.5em" />
-  </Ui.FullHeight>;
+  </Ui.FullHeight>
+);
 
-const Admin = () =>
+const Admin = () => (
   <Loader url="/admin/home" onError={{401: ShowLogin}}>
-    {data =>
+    {data => (
       <div>
         <h1>Admin</h1>
         <AddCountdown />
-      </div>}
-  </Loader>;
+      </div>
+    )}
+  </Loader>
+);
 
 export default Admin;

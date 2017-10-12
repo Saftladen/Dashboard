@@ -2,7 +2,11 @@ import crypto from "crypto";
 import randomstring from "randomstring";
 
 export const sha = secret =>
-  crypto.createHash("sha256").update(secret, "utf8").digest().toString("hex");
+  crypto
+    .createHash("sha256")
+    .update(secret, "utf8")
+    .digest()
+    .toString("hex");
 
 const createTokenString = () => randomstring.generate(24);
 

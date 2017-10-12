@@ -32,17 +32,20 @@ export default class DoAction extends React.Component {
             if (onSuccess) onSuccess(jsonRes);
           });
         } else {
-          e.json().catch(e => ({error: e})).then(jsonRes => {
-            if (onError) {
-              this.setState({isLoading: false});
-              onError(e);
-            } else {
-              this.setState({
-                isLoading: false,
-                error: jsonRes.error || jsonRes.message || JSON.stringify(jsonRes),
-              });
-            }
-          });
+          e
+            .json()
+            .catch(e => ({error: e}))
+            .then(jsonRes => {
+              if (onError) {
+                this.setState({isLoading: false});
+                onError(e);
+              } else {
+                this.setState({
+                  isLoading: false,
+                  error: jsonRes.error || jsonRes.message || JSON.stringify(jsonRes),
+                });
+              }
+            });
         }
       },
       e => {

@@ -15,7 +15,7 @@ const AuthBarContainer = B.div({
   right: 0,
 });
 
-export const SigninWithSlack = ({height = "1.5em", css}) =>
+export const SigninWithSlack = ({height = "1.5em", css}) => (
   <B.A
     display="block"
     href={`https://slack.com/oauth/authorize?&client_id=${process.env
@@ -29,20 +29,24 @@ export const SigninWithSlack = ({height = "1.5em", css}) =>
       srcSet="https://platform.slack-edge.com/img/sign_in_with_slack.png 1x, https://platform.slack-edge.com/img/sign_in_with_slack@2x.png 2x"
       height={height}
     />
-  </B.A>;
+  </B.A>
+);
 
-const AuthBar = ({data}) =>
+const AuthBar = ({data}) => (
   <AuthBarContainer>
-    {data.me
-      ? <Ui.RawButton to="/admin" css={bgStyle}>
-          <B.Div display="flex" alignItems="center">
-            <B.Img alt={data.me.name} src={data.me.avatar} height="1.2em" borderRadius="50%" />
-            <B.Div marginLeft="0.4em" fontWeight="bold">
-              {data.me.name}
-            </B.Div>
+    {data.me ? (
+      <Ui.RawButton to="/admin" css={bgStyle}>
+        <B.Div display="flex" alignItems="center">
+          <B.Img alt={data.me.name} src={data.me.avatar} height="1.2em" borderRadius="50%" />
+          <B.Div marginLeft="0.4em" fontWeight="bold">
+            {data.me.name}
           </B.Div>
-        </Ui.RawButton>
-      : <SigninWithSlack height="2em" css={bgStyle} />}
-  </AuthBarContainer>;
+        </B.Div>
+      </Ui.RawButton>
+    ) : (
+      <SigninWithSlack height="2em" css={bgStyle} />
+    )}
+  </AuthBarContainer>
+);
 
 export default AuthBar;

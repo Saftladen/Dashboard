@@ -102,7 +102,7 @@ const Textarea = B.textarea(...sharedInputStyle, {resize: "vertical"});
 
 const typesToComp = {select: "select", textarea: Textarea};
 
-const Field = ({label, name, onChange, type = "text", ...rest}) =>
+const Field = ({label, name, onChange, type = "text", ...rest}) => (
   <B.Div marginBottom={20}>
     <FieldLabel htmlFor="name" type={type}>
       {label}
@@ -114,7 +114,8 @@ const Field = ({label, name, onChange, type = "text", ...rest}) =>
       onChange,
       ...rest,
     })}
-  </B.Div>;
+  </B.Div>
+);
 
 export default {
   FullHeight,
