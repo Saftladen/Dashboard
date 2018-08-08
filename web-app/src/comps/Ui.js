@@ -70,40 +70,50 @@ const BorderButton = B(LinkOrButton)(...rawButtonStyles, {
   },
 });
 
+const FullButton = B(LinkOrButton)(...rawButtonStyles, {
+  backgroundColor: col.accent,
+  color: "#fff",
+  padding: "15px 25px",
+  fontWeight: "bold",
+  fontSize: "1rem",
+  ":hover": {
+    backgroundColor: "#fff",
+    color: col.accent,
+  },
+});
+
 const FieldLabel = B.label(
   {
     display: "block",
-    fontSize: 11,
-    marginBottom: 3,
+    fontSize: "0.8rem",
+    marginBottom: "0.2rem",
   },
   ({type}) => ({
-    ...(type === "select" ? {marginBottom: 8} : null),
+    ...(type === "select" ? {marginBottom: "0.4rem"} : null),
   })
 );
 
-const sharedInputStyle = [
-  {
-    padding: "5px 0",
-    border: "none",
-    borderBottom: "1px solid rgba(0,0,0,0.1)",
-    width: "100%",
-    fontFamily: "inherit",
-    fontSize: 15,
-    transitionProperty: "border-color",
-    ":focus": {
-      outline: "none",
-      borderBottomColor: col.brand,
-    },
+const sharedInputStyle = {
+  backgroundColor: "#fff",
+  padding: "0.5rem 0.75rem",
+  border: "none",
+  width: "100%",
+  fontFamily: "inherit",
+  fontSize: "1rem",
+  transitionProperty: "border-color",
+  ":focus": {
+    outline: "none",
+    borderBottomColor: col.brand,
   },
-];
+};
 
-const Input = B.input(...sharedInputStyle);
-const Textarea = B.textarea(...sharedInputStyle, {resize: "vertical"});
+const Input = B.input(sharedInputStyle);
+const Textarea = B.textarea(sharedInputStyle, {resize: "vertical"});
 
 const typesToComp = {select: "select", textarea: Textarea};
 
 const Field = ({label, name, onChange, type = "text", ...rest}) => (
-  <B.Div marginBottom={20}>
+  <B.Div marginBottom="2rem">
     <FieldLabel htmlFor="name" type={type}>
       {label}
     </FieldLabel>
@@ -117,11 +127,24 @@ const Field = ({label, name, onChange, type = "text", ...rest}) => (
   </B.Div>
 );
 
+const H1 = B.h1({
+  fontSize: "2rem",
+  marginBottom: "1rem",
+});
+
+const H2 = B.h2({
+  fontSize: "1.5rem",
+  marginBottom: "1rem",
+});
+
 export default {
   FullHeight,
   IconButton,
   TextButton,
   BorderButton,
+  FullButton,
   Field,
   RawButton,
+  H1,
+  H2,
 };

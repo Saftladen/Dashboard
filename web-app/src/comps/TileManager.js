@@ -1,5 +1,6 @@
 import React from "react";
 import B from "glamorous";
+import Countdown from "./tiles/Countdown";
 
 const getRelativeScores = inputPlacements => {
   const placements = inputPlacements.map((p, i) => ({
@@ -16,12 +17,14 @@ const getRelativeScores = inputPlacements => {
 
 // assumes validSizes is sorted
 const findValidTileSize = (desired, validSizes) =>
-  validSizes.find((s, i) => {
-    if (s >= desired) return true;
-    if (i + 1 === validSizes.length) return true;
-    if (validSizes[i + 1] < desired) return false;
-    return desired - s > validSizes[i + 1] - desired ? false : true;
-  });
+  desired === 0
+    ? 0
+    : validSizes.find((s, i) => {
+        if (s >= desired) return true;
+        if (i + 1 === validSizes.length) return true;
+        if (validSizes[i + 1] < desired) return false;
+        return desired - s > validSizes[i + 1] - desired ? false : true;
+      });
 
 const VALID_TILE_SIZES = [1, 2, 3, 4, 6, 8, 9, 12];
 const VALID_DIMENSIONS = {
@@ -176,8 +179,9 @@ const assignChunks = (list, availableChunks, getTileCount, setCoords) => {
   const suitableChunk = findSuitableChunk(availableChunks, tileCount);
   if (!suitableChunk) {
     console.warn(
-      `warning! couldn't find tileSize ${tileCount} into ${JSON.stringify(availableChunks)}`
+      `warning! couldn't fit tileSize ${tileCount} into ${JSON.stringify(availableChunks)}`
     );
+    setCoords(head, null);
     if (tail.length > 0) assignChunks(tail, availableChunks, getTileCount, setCoords);
     return;
   }
@@ -220,7 +224,6 @@ const assignChunks = (list, availableChunks, getTileCount, setCoords) => {
       h: suitableDimensions.h,
     };
   }
-  console.log("newBlock", tileCount, newBlock);
   setCoords(head, newBlock);
   if (tail.length > 0) {
     const splitA = splitChunkA(suitableChunk, newBlock);
@@ -249,6 +252,38 @@ const assignChunks = (list, availableChunks, getTileCount, setCoords) => {
 // 04 05 06 07
 // 08 09 10 11
 
+const Container = B.div({
+  position: "relative",
+  width: "100vw",
+  height: "100vh",
+});
+
+const Tile = B.div(
+  {
+    position: "absolute",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  ({rect, totalRows, totalCols}) => {
+    const wUnit = 1 / totalCols * 100;
+    const hUnit = 1 / totalRows * 100;
+    return {
+      fontSize: `${hUnit}px`,
+      top: `${rect.y * hUnit}%`,
+      left: `${rect.x * wUnit}%`,
+      height: `${rect.h * hUnit}%`,
+      width: `${rect.w * wUnit}%`,
+    };
+  }
+);
+
+const getComponent = p => {
+  if (p.countdown_id) return <Countdown data={p.countdown} />;
+  return <div>Unknown Tile {JSON.stringify(p)}</div>;
+};
+
 const TileManager = ({data}) => {
   const relPlacements = getRelativeScores(data.placements);
   relPlacements.sort((a, b) => (a.modScore > b.modScore ? -1 : a.modScore < b.modScore ? 1 : 0));
@@ -261,11 +296,14 @@ const TileManager = ({data}) => {
     VALID_TILE_SIZES
   );
   assignChunks(relPlacements, [{x: 0, y: 0, w: 4, h: 3}], p => p.tiles, (p, c) => (p.rect = c));
-  console.log("relPlacements", relPlacements);
   return (
-    <B.Div>
-      <h1>TileManager</h1>
-    </B.Div>
+    <Container>
+      {relPlacements.filter(r => r.rect).map((r, i) => (
+        <Tile key={i} rect={r.rect} totalRows={3} totalCols={4}>
+          {getComponent(r.p)}
+        </Tile>
+      ))}
+    </Container>
   );
 };
 

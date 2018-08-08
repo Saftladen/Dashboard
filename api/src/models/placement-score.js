@@ -33,11 +33,13 @@ const getTop = (db, count, isPublicOnly) =>
         [
           {
             fk: "countdown_id",
-            sql: "select id, label, ends_at, creator_id from countdowns where id = any($1::int[])",
+            sql:
+              "select id, label, ends_at, creator_id, created_at from countdowns where id = any($1::int[])",
           },
           {
             fk: "media_id",
-            sql: "select id, label, type, url, creator_id from medias where id = any($1::int[])",
+            sql:
+              "select id, label, type, url, creator_id, created_at from medias where id = any($1::int[])",
           },
         ].map(({fk, sql}) => filterAndEnrichWith(db, r.rows, fk, sql))
       ).then(list => list.reduce((m, results) => [...m, ...results]), [])
