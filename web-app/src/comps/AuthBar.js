@@ -13,6 +13,7 @@ const AuthBarContainer = styled("div")({
   position: "absolute",
   top: 0,
   right: 0,
+  zIndex: 1,
 });
 
 export const SigninWithSlack = ({height = "1.5em", css}) => (
@@ -22,15 +23,16 @@ export const SigninWithSlack = ({height = "1.5em", css}) => (
     }&scope=identity.basic,identity.avatar&state=user`}
     css={{
       ...css,
-      display: "block"
-    }}>
+      display: "block",
+    }}
+  >
     <img
       alt="Sign in with Slack"
       src="https://platform.slack-edge.com/img/sign_in_with_slack.png"
       srcSet="https://platform.slack-edge.com/img/sign_in_with_slack.png 1x, https://platform.slack-edge.com/img/sign_in_with_slack@2x.png 2x"
-      height={height}
       css={{
-        display: "block"
+        height,
+        display: "block",
       }}
     />
   </a>
@@ -43,22 +45,22 @@ const AuthBar = ({data}) => (
         <div
           css={{
             display: "flex",
-            alignItems: "center"
-          }}>
-          <img alt={data.me.name} src={data.me.avatar} height="1.2em" css={{
-            borderRadius: "50%"
-          }} />
-          <div
+            alignItems: "center",
+          }}
+        >
+          <img
+            alt={data.me.name}
+            src={data.me.avatar}
             css={{
-              marginLeft: "0.4em",
-              fontWeight: "bold"
-            }}>
-            {data.me.name}
-          </div>
+              height: "1.2em",
+              borderRadius: "50%",
+            }}
+          />
+          <div css={{marginLeft: "0.4em", fontWeight: "bold"}}>{data.me.name}</div>
         </div>
       </Ui.RawButton>
     ) : (
-      <SigninWithSlack height="2em" css={bgStyle} />
+      <SigninWithSlack height="1em" css={bgStyle} />
     )}
   </AuthBarContainer>
 );

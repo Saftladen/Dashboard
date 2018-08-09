@@ -2,48 +2,42 @@ import React from "react";
 import Loader from "./Loader";
 import styled from "react-emotion";
 import Ui from "./Ui";
-import FormState from "./FormState";
 import {SigninWithSlack} from "./AuthBar";
-import DoAction from "./DoAction";
+import {Field, rules, FormWithButton} from "./Form";
 
 const AddCountdown = () => (
-  <FormState initialModel={{label: "Lunch", minutes: "10"}}>
-    {({model, changeField}) => (
-      <DoAction
-        name="create-countdown"
-        data={{
-          label: model.label,
-          isPrivate: false,
-          endsAt: new Date(new Date().getTime() + 1000 * 60 * (parseInt(model.minutes, 10) || 0)),
-        }}
-      >
-        {({performFn, isLoading}) => (
-          <form onSubmit={performFn}>
-            <Ui.H2>Create Countdown</Ui.H2>
-            <Ui.Field
-              label="Label"
-              value={model.label || ""}
-              onChange={e => changeField("label", e.target.value)}
-            />
-            <Ui.Field
-              label="Minutes to go"
-              type="number"
-              value={model.minutes || ""}
-              onChange={e => changeField("minutes", e.target.value)}
-            />
-            <Ui.FullButton disabled={isLoading}>Create Countdown</Ui.FullButton>
-          </form>
-        )}
-      </DoAction>
+  <FormWithButton
+    buttonLabel="Create Countdown"
+    rules={{label: [rules.isRequired], minutes: [rules.isRequired]}}
+    initialValues={{label: "Lunch", minutes: "10"}}
+    onSubmitSend={{
+      to: "create-countdown",
+      data: value => ({
+        label: value.label,
+        isPrivate: false,
+        endsAt: new Date(new Date().getTime() + 1000 * 60 * (parseInt(value.minutes, 10) || 0)),
+      }),
+    }}
+  >
+    {() => (
+      <React.Fragment>
+        <Ui.H2>Create Countdown</Ui.H2>
+        <Field name="label" label="Label" />
+        <Field name="minutes" label="Minutes to go" type="number" />
+      </React.Fragment>
     )}
-  </FormState>
+  </FormWithButton>
 );
 
 const ShowLogin = () => (
   <Ui.FullHeight css={{minHeight: "100vh", alignItems: "center", justifyContent: "center"}}>
-    <div css={{
-      marginBottom: "1em"
-    }}>You're not logged in</div>
+    <div
+      css={{
+        marginBottom: "1em",
+      }}
+    >
+      You're not logged in
+    </div>
     <SigninWithSlack height="1.5em" />
   </Ui.FullHeight>
 );

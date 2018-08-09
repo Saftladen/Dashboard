@@ -233,7 +233,7 @@ const assignChunks = (list, availableChunks, getTileCount, setCoords) => {
     const badCase =
       tileCount === 6 && nextTileCount === 3 && tail.length >= 2 && getTileCount(tail[1]) === 3;
 
-    if (!badCase && findSuitableChunk(newChunksA, nextTileCount)) {
+    if (nextTileCount && !badCase && findSuitableChunk(newChunksA, nextTileCount)) {
       assignChunks(tail, newChunksA, getTileCount, setCoords);
     } else {
       assignChunks(
@@ -258,23 +258,26 @@ const Container = styled("div")({
   height: "100vh",
 });
 
-const Tile = styled("div")({
-  position: "absolute",
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  justifyContent: "center",
-}, ({rect, totalRows, totalCols}) => {
-  const wUnit = (1 / totalCols) * 100;
-  const hUnit = (1 / totalRows) * 100;
-  return {
-    fontSize: `${hUnit}px`,
-    top: `${rect.y * hUnit}%`,
-    left: `${rect.x * wUnit}%`,
-    height: `${rect.h * hUnit}%`,
-    width: `${rect.w * wUnit}%`,
-  };
-});
+const Tile = styled("div")(
+  {
+    position: "absolute",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  ({rect, totalRows, totalCols}) => {
+    const wUnit = (1 / totalCols) * 100;
+    const hUnit = (1 / totalRows) * 100;
+    return {
+      fontSize: `${hUnit}px`,
+      top: `${rect.y * hUnit}%`,
+      left: `${rect.x * wUnit}%`,
+      height: `${rect.h * hUnit}%`,
+      width: `${rect.w * wUnit}%`,
+    };
+  }
+);
 
 const getComponent = p => {
   if (p.countdown_id) return <Countdown data={p.countdown} />;

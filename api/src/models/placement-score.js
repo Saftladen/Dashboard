@@ -24,6 +24,7 @@ const getTop = (db, count, isPublicOnly) =>
     select current_score, creator_id, is_private, countdown_id
     from vw_top_placements
     ${isPublicOnly ? "where not is_private" : ""}
+    order by current_score desc
     limit $1
       `,
       [count]

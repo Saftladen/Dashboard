@@ -82,13 +82,16 @@ const FullButton = styled(LinkOrButton)(...rawButtonStyles, {
   },
 });
 
-const FieldLabel = styled("label")({
-  display: "block",
-  fontSize: "0.8rem",
-  marginBottom: "0.2rem",
-}, ({type}) => ({
-  ...(type === "select" ? {marginBottom: "0.4rem"} : null),
-}));
+const FieldLabel = styled("label")(
+  {
+    display: "block",
+    fontSize: "0.8rem",
+    marginBottom: "0.2rem",
+  },
+  ({type}) => ({
+    ...(type === "select" ? {marginBottom: "0.4rem"} : null),
+  })
+);
 
 const sharedInputStyle = {
   backgroundColor: "#fff",
@@ -110,9 +113,11 @@ const Textarea = styled("textarea")(sharedInputStyle, {resize: "vertical"});
 const typesToComp = {select: "select", textarea: Textarea};
 
 const Field = ({label, name, onChange, type = "text", ...rest}) => (
-  <div css={{
-    marginBottom: "2rem"
-  }}>
+  <div
+    css={{
+      marginBottom: "2rem",
+    }}
+  >
     <FieldLabel htmlFor="name" type={type}>
       {label}
     </FieldLabel>
@@ -136,7 +141,35 @@ const H2 = styled("h2")({
   marginBottom: "1rem",
 });
 
+const pointToProps = {
+  top: col => ({borderTopWidth: 0, borderBottomColor: col}),
+  bottom: col => ({borderBottomWidth: 0, borderTopColor: col}),
+  left: col => ({borderLeftWidth: 0, borderRightColor: col}),
+  right: col => ({borderRightWidth: 0, borderLeftColor: col}),
+};
+
+const Arrow = styled("div")(
+  {
+    position: "absolute",
+    width: 0,
+    height: 0,
+    borderColor: "transparent",
+    borderStyle: "solid",
+  },
+  ({pointTo, color, size}) => ({
+    borderWidth: size,
+    top: pointTo === "bottom" ? "100%" : pointTo === "top" ? undefined : "50%",
+    bottom: pointTo === "top" ? "100%" : pointTo === "bottom" ? undefined : "50%",
+    left: pointTo === "right" ? "100%" : pointTo === "left" ? undefined : "50%",
+    right: pointTo === "left" ? "100%" : pointTo === "right" ? undefined : "50%",
+    marginLeft: pointTo === "top" || pointTo === "bottom" ? -size : undefined,
+    marginTop: pointTo === "left" || pointTo === "right" ? -size : undefined,
+    ...pointToProps[pointTo](color),
+  })
+);
+
 export default {
+  Arrow,
   FullHeight,
   IconButton,
   TextButton,

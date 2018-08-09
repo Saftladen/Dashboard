@@ -1,4 +1,6 @@
 {
+  "name": "saftboard",
+  "private": true,
   "scripts": {
     "prettify": "prettier --write --print-width=100 --no-bracket-spacing --trailing-comma=es5",
     "prettify-all": "npm run prettify -- './{web-app,api}/src/**/*.{js,json,css}'"
