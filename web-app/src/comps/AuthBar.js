@@ -1,5 +1,5 @@
 import React from "react";
-import B from "glamorous";
+import styled from "react-emotion";
 import Ui from "./Ui";
 
 const bgStyle = {
@@ -9,40 +9,53 @@ const bgStyle = {
   borderBottomLeftRadius: "0.2em",
 };
 
-const AuthBarContainer = B.div({
+const AuthBarContainer = styled("div")({
   position: "absolute",
   top: 0,
   right: 0,
 });
 
 export const SigninWithSlack = ({height = "1.5em", css}) => (
-  <B.A
-    display="block"
+  <a
     href={`https://slack.com/oauth/authorize?&client_id=${
       process.env.REACT_APP_SLACK_CLIENT_ID
     }&scope=identity.basic,identity.avatar&state=user`}
-    css={css}
-  >
-    <B.Img
-      display="block"
+    css={{
+      ...css,
+      display: "block"
+    }}>
+    <img
       alt="Sign in with Slack"
       src="https://platform.slack-edge.com/img/sign_in_with_slack.png"
       srcSet="https://platform.slack-edge.com/img/sign_in_with_slack.png 1x, https://platform.slack-edge.com/img/sign_in_with_slack@2x.png 2x"
       height={height}
+      css={{
+        display: "block"
+      }}
     />
-  </B.A>
+  </a>
 );
 
 const AuthBar = ({data}) => (
   <AuthBarContainer>
     {data.me ? (
       <Ui.RawButton to="/admin" css={bgStyle}>
-        <B.Div display="flex" alignItems="center">
-          <B.Img alt={data.me.name} src={data.me.avatar} height="1.2em" borderRadius="50%" />
-          <B.Div marginLeft="0.4em" fontWeight="bold">
+        <div
+          css={{
+            display: "flex",
+            alignItems: "center"
+          }}>
+          <img alt={data.me.name} src={data.me.avatar} height="1.2em" css={{
+            borderRadius: "50%"
+          }} />
+          <div
+            css={{
+              marginLeft: "0.4em",
+              fontWeight: "bold"
+            }}>
             {data.me.name}
-          </B.Div>
-        </B.Div>
+          </div>
+        </div>
       </Ui.RawButton>
     ) : (
       <SigninWithSlack height="2em" css={bgStyle} />

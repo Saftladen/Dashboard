@@ -1,5 +1,5 @@
 import React from "react";
-import B from "glamorous";
+import styled from "react-emotion";
 import Countdown from "./tiles/Countdown";
 
 const getRelativeScores = inputPlacements => {
@@ -252,32 +252,29 @@ const assignChunks = (list, availableChunks, getTileCount, setCoords) => {
 // 04 05 06 07
 // 08 09 10 11
 
-const Container = B.div({
+const Container = styled("div")({
   position: "relative",
   width: "100vw",
   height: "100vh",
 });
 
-const Tile = B.div(
-  {
-    position: "absolute",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  ({rect, totalRows, totalCols}) => {
-    const wUnit = (1 / totalCols) * 100;
-    const hUnit = (1 / totalRows) * 100;
-    return {
-      fontSize: `${hUnit}px`,
-      top: `${rect.y * hUnit}%`,
-      left: `${rect.x * wUnit}%`,
-      height: `${rect.h * hUnit}%`,
-      width: `${rect.w * wUnit}%`,
-    };
-  }
-);
+const Tile = styled("div")({
+  position: "absolute",
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "center",
+}, ({rect, totalRows, totalCols}) => {
+  const wUnit = (1 / totalCols) * 100;
+  const hUnit = (1 / totalRows) * 100;
+  return {
+    fontSize: `${hUnit}px`,
+    top: `${rect.y * hUnit}%`,
+    left: `${rect.x * wUnit}%`,
+    height: `${rect.h * hUnit}%`,
+    width: `${rect.w * wUnit}%`,
+  };
+});
 
 const getComponent = p => {
   if (p.countdown_id) return <Countdown data={p.countdown} />;

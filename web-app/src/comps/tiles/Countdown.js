@@ -1,20 +1,19 @@
 import React from "react";
-import B from "glamorous";
-import {css} from "glamor";
+import styled, {keyframes} from "react-emotion";
 
-let blink = css.keyframes({
-  "50%": {opacity: 0},
-});
+let blink = keyframes`
+  50% {opacity: 0}
+`;
 
 const toSecs = d => Math.round(d.getTime() / 1000);
 
-const Label = B.div({
+const Label = styled("div")({
   textAlign: "center",
   fontSize: "0.8em",
   marginBottom: "0.3em",
 });
 
-const TimeContainer = B.div({
+const TimeContainer = styled("div")({
   fontWeight: "bold",
   fontSize: "2em",
 });

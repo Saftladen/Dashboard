@@ -1,16 +1,15 @@
 import React from "react";
 import Fetch from "./Fetch";
-import B from "glamorous";
+import styled, {keyframes} from "react-emotion";
 import Ui from "./Ui";
-import {css} from "glamor";
 import {Motion, spring, presets} from "react-motion";
 
-const rotate = css.keyframes({
-  "0%": {transform: `rotate(0deg)`},
-  "100%": {transform: `rotate(360deg)`},
-});
+const rotate = keyframes`
+  from: {transform: rotate(0deg)},
+  to: {transform: rotate(360deg)},
+`;
 
-const SpinContainer = B.svg(
+const SpinContainer = styled("svg")(
   {
     stroke: "#ccc",
   },
@@ -19,7 +18,7 @@ const SpinContainer = B.svg(
   })
 );
 
-const SpinG = B.g({
+const SpinG = styled("g")({
   strokeWidth: 2,
   transformOrigin: "50% 50%",
   fill: "none",
@@ -35,7 +34,7 @@ export const Spinner = ({size = 75}) => (
   </SpinContainer>
 );
 
-const LoaderContainer = B.div({
+const LoaderContainer = styled("div")({
   position: "absolute",
   top: 0,
   left: 0,

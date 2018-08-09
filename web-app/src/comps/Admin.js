@@ -1,6 +1,6 @@
 import React from "react";
 import Loader from "./Loader";
-import B from "glamorous";
+import styled from "react-emotion";
 import Ui from "./Ui";
 import FormState from "./FormState";
 import {SigninWithSlack} from "./AuthBar";
@@ -41,12 +41,14 @@ const AddCountdown = () => (
 
 const ShowLogin = () => (
   <Ui.FullHeight css={{minHeight: "100vh", alignItems: "center", justifyContent: "center"}}>
-    <B.Div marginBottom="1em">You're not logged in</B.Div>
+    <div css={{
+      marginBottom: "1em"
+    }}>You're not logged in</div>
     <SigninWithSlack height="1.5em" />
   </Ui.FullHeight>
 );
 
-const Container = B.div({
+const Container = styled("div")({
   padding: "2rem",
   maxWidth: 1000,
   width: "100%",

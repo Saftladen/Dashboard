@@ -2,7 +2,6 @@ import React from "react";
 import {Redirect} from "react-router-dom";
 import Loader from "./Loader";
 import Ui from "./Ui";
-import B from "glamorous";
 import qs from "qs";
 import * as auth from "../lib/auth";
 import AuthBar from "./AuthBar";
@@ -18,13 +17,15 @@ const HasSlackTeam = ({data, children}) =>
           process.env.REACT_APP_SLACK_CLIENT_ID
         }&scope=channels:history&state=team`}
       >
-        <B.Img
-          display="block"
+        <img
           alt="Add to Slack"
           height="40"
           width="139"
           src="https://platform.slack-edge.com/img/add_to_slack.png"
           srcSet="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x"
+          css={{
+            display: "block"
+          }}
         />
       </Ui.RawButton>
     </Ui.FullHeight>

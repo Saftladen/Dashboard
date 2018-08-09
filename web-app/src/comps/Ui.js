@@ -1,9 +1,9 @@
 import React from "react";
-import B from "glamorous";
+import styled from "react-emotion";
 import {Link} from "react-router-dom";
 import col from "./colors";
 
-const FullHeight = B.div({
+const FullHeight = styled("div")({
   display: "flex",
   flexDirection: "column",
   flex: "auto",
@@ -32,13 +32,13 @@ const rawButtonStyles = [
 const LinkOrButton = props =>
   "to" in props ? <Link {...props} /> : "href" in props ? <a {...props} /> : <button {...props} />;
 
-const RawButton = B(LinkOrButton)(...rawButtonStyles, {
+const RawButton = styled(LinkOrButton)(...rawButtonStyles, {
   ":hover": {
     backgroundColor: "rgba(255,255,255,0.2)",
   },
 });
 
-const IconButton = B(LinkOrButton)(...rawButtonStyles, {
+const IconButton = styled(LinkOrButton)(...rawButtonStyles, {
   padding: 10,
   borderRadius: "100%",
   ":hover": {
@@ -46,7 +46,7 @@ const IconButton = B(LinkOrButton)(...rawButtonStyles, {
   },
 });
 
-const TextButton = B(LinkOrButton)(...rawButtonStyles, {
+const TextButton = styled(LinkOrButton)(...rawButtonStyles, {
   color: col.accent,
   padding: 10,
   borderRadius: 5,
@@ -56,7 +56,7 @@ const TextButton = B(LinkOrButton)(...rawButtonStyles, {
   },
 });
 
-const BorderButton = B(LinkOrButton)(...rawButtonStyles, {
+const BorderButton = styled(LinkOrButton)(...rawButtonStyles, {
   color: col.accent,
   padding: "15px 25px",
   border: `2px solid ${col.accent}`,
@@ -70,7 +70,7 @@ const BorderButton = B(LinkOrButton)(...rawButtonStyles, {
   },
 });
 
-const FullButton = B(LinkOrButton)(...rawButtonStyles, {
+const FullButton = styled(LinkOrButton)(...rawButtonStyles, {
   backgroundColor: col.accent,
   color: "#fff",
   padding: "15px 25px",
@@ -82,16 +82,13 @@ const FullButton = B(LinkOrButton)(...rawButtonStyles, {
   },
 });
 
-const FieldLabel = B.label(
-  {
-    display: "block",
-    fontSize: "0.8rem",
-    marginBottom: "0.2rem",
-  },
-  ({type}) => ({
-    ...(type === "select" ? {marginBottom: "0.4rem"} : null),
-  })
-);
+const FieldLabel = styled("label")({
+  display: "block",
+  fontSize: "0.8rem",
+  marginBottom: "0.2rem",
+}, ({type}) => ({
+  ...(type === "select" ? {marginBottom: "0.4rem"} : null),
+}));
 
 const sharedInputStyle = {
   backgroundColor: "#fff",
@@ -107,13 +104,15 @@ const sharedInputStyle = {
   },
 };
 
-const Input = B.input(sharedInputStyle);
-const Textarea = B.textarea(sharedInputStyle, {resize: "vertical"});
+const Input = styled("input")(sharedInputStyle);
+const Textarea = styled("textarea")(sharedInputStyle, {resize: "vertical"});
 
 const typesToComp = {select: "select", textarea: Textarea};
 
 const Field = ({label, name, onChange, type = "text", ...rest}) => (
-  <B.Div marginBottom="2rem">
+  <div css={{
+    marginBottom: "2rem"
+  }}>
     <FieldLabel htmlFor="name" type={type}>
       {label}
     </FieldLabel>
@@ -124,15 +123,15 @@ const Field = ({label, name, onChange, type = "text", ...rest}) => (
       onChange,
       ...rest,
     })}
-  </B.Div>
+  </div>
 );
 
-const H1 = B.h1({
+const H1 = styled("h1")({
   fontSize: "2rem",
   marginBottom: "1rem",
 });
 
-const H2 = B.h2({
+const H2 = styled("h2")({
   fontSize: "1.5rem",
   marginBottom: "1rem",
 });
