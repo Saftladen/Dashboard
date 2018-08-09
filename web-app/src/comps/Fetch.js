@@ -123,7 +123,7 @@ export default class Fetch extends React.Component {
     if (nextProps.url !== this.props.url) {
       if (this.unsub) this.unsub();
       if (nextProps.url) {
-        this.state = context.fetcher.getInitialResult(nextProps.url);
+        this.setState(context.fetcher.getInitialResult(nextProps.url));
         this.unsub = context.fetcher.register(nextProps.url, this.setResult);
       } else {
         this.setState({isLoading: true, result: null, error: null});
