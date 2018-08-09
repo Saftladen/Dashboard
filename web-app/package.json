@@ -12,7 +12,6 @@
     "react-dom": "^15.6.1",
     "react-motion": "^0.5.0",
     "react-router-dom": "^4.1.2",
-    "react-scripts": "1.0.11",
     "typeface-source-sans-pro": "^0.0.35"
   },
   "scripts": {
@@ -21,5 +20,7 @@
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "react-scripts": "1.0.11"
+  }
 }

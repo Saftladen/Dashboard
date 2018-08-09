@@ -32,8 +32,7 @@ export default class DoAction extends React.Component {
             if (onSuccess) onSuccess(jsonRes);
           });
         } else {
-          e
-            .json()
+          e.json()
             .catch(e => ({error: e}))
             .then(jsonRes => {
               if (onError) {

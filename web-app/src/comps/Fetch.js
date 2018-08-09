@@ -142,7 +142,9 @@ export default class Fetch extends React.Component {
 
   render() {
     const {isLoading, result, error} = this.state;
-    const {fetcher: {clearCache}} = this.context;
+    const {
+      fetcher: {clearCache},
+    } = this.context;
     return this.props.children({isLoading, data: result, error, clearCache});
   }
 }
@@ -153,7 +155,9 @@ export class FetchError extends React.Component {
   };
 
   render() {
-    const {fetcher: {errorState}} = this.context;
+    const {
+      fetcher: {errorState},
+    } = this.context;
     return errorState && this.props.children(errorState);
   }
 }
@@ -164,7 +168,9 @@ export class FetchLoading extends React.Component {
   };
 
   render() {
-    const {fetcher: {isLoading}} = this.context;
+    const {
+      fetcher: {isLoading},
+    } = this.context;
     return isLoading && this.props.children();
   }
 }

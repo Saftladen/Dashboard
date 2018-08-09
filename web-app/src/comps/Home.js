@@ -14,8 +14,9 @@ const HasSlackTeam = ({data, children}) =>
   ) : (
     <Ui.FullHeight css={{minHeight: "100vh", alignItems: "center", justifyContent: "center"}}>
       <Ui.RawButton
-        href={`https://slack.com/oauth/authorize?&client_id=${process.env
-          .REACT_APP_SLACK_CLIENT_ID}&scope=channels:history&state=team`}
+        href={`https://slack.com/oauth/authorize?&client_id=${
+          process.env.REACT_APP_SLACK_CLIENT_ID
+        }&scope=channels:history&state=team`}
       >
         <B.Img
           display="block"

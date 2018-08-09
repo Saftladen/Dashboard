@@ -49,11 +49,14 @@ const plugin = (server, options, next) => {
                       : Promise.reject(`Only for ${teamData.team_name} members!`)
                 )
         )
-        .then(data => {
-          reply.redirect(
-            `${process.env.CLIENT_HOST}/${data ? `?${querystring.stringify(data)}` : ""}`
-          );
-        }, e => console.log("e", e) || reply({ok: false, error: e}).code(400)),
+        .then(
+          data => {
+            reply.redirect(
+              `${process.env.CLIENT_HOST}/${data ? `?${querystring.stringify(data)}` : ""}`
+            );
+          },
+          e => console.log("e", e) || reply({ok: false, error: e}).code(400)
+        ),
   });
 
   next();

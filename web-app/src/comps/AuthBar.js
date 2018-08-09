@@ -18,8 +18,9 @@ const AuthBarContainer = B.div({
 export const SigninWithSlack = ({height = "1.5em", css}) => (
   <B.A
     display="block"
-    href={`https://slack.com/oauth/authorize?&client_id=${process.env
-      .REACT_APP_SLACK_CLIENT_ID}&scope=identity.basic,identity.avatar&state=user`}
+    href={`https://slack.com/oauth/authorize?&client_id=${
+      process.env.REACT_APP_SLACK_CLIENT_ID
+    }&scope=identity.basic,identity.avatar&state=user`}
     css={css}
   >
     <B.Img

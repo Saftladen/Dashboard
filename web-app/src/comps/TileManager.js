@@ -58,7 +58,7 @@ const assignTileCounts = (
   } else {
     const score = scoreGetter(head);
     const tiles = findValidTileSize(
-      Math.ceil(remainingTiles * score / (1 - usedUpRelSpace)),
+      Math.ceil((remainingTiles * score) / (1 - usedUpRelSpace)),
       validTileSizes
     );
     const nextValidTileSize = limitTileSize[tiles]
@@ -267,8 +267,8 @@ const Tile = B.div(
     justifyContent: "center",
   },
   ({rect, totalRows, totalCols}) => {
-    const wUnit = 1 / totalCols * 100;
-    const hUnit = 1 / totalRows * 100;
+    const wUnit = (1 / totalCols) * 100;
+    const hUnit = (1 / totalRows) * 100;
     return {
       fontSize: `${hUnit}px`,
       top: `${rect.y * hUnit}%`,

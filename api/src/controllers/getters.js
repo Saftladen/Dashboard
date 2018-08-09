@@ -20,17 +20,15 @@ const plugin = (server, options, next) => {
           hasSlackTeam,
         })),
         request.userId
-          ? Integration.getData(
-              request.pg,
-              Integration.Type.SlackUser,
-              request.userId
-            ).then(userData => ({
-              me: {
-                id: request.userId,
-                name: userData.user.name,
-                avatar: userData.user.image_72,
-              },
-            }))
+          ? Integration.getData(request.pg, Integration.Type.SlackUser, request.userId).then(
+              userData => ({
+                me: {
+                  id: request.userId,
+                  name: userData.user.name,
+                  avatar: userData.user.image_72,
+                },
+              })
+            )
           : Promise.resolve({me: null}),
         PlacementScore.getTop(request.pg, 12, !request.userId).then(res => ({placements: res})),
       ]).then(
