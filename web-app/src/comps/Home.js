@@ -1,11 +1,11 @@
 import React from "react";
 import {Redirect} from "react-router-dom";
-import Loader from "./Loader";
 import Ui from "./Ui";
 import qs from "qs";
 import * as auth from "../lib/auth";
 import AuthBar from "./AuthBar";
 import TileManager from "./TileManager";
+import {Connect, query} from "urql";
 
 const HasSlackTeam = ({data, children}) =>
   data.hasSlackTeam ? (
@@ -29,24 +29,35 @@ const HasSlackTeam = ({data, children}) =>
     </Ui.FullHeight>
   );
 
+const HomeQuery = `
+query {
+  currentUser {
+    name
+  }
+}
+`;
+
 const Home = ({location}) => {
-  const query = qs.parse(location.search, {ignoreQueryPrefix: true});
-  if (query && query.authToken) {
-    auth.setToken(query.authToken);
+  const q = qs.parse(location.search, {ignoreQueryPrefix: true});
+  if (q && q.authToken) {
+    auth.setToken(q.authToken);
     return <Redirect to="/" />;
   } else {
     return (
-      <Loader url="/public/home">
-        {data => (
-          <HasSlackTeam data={data}>
-            <Ui.FullHeight>
-              <AuthBar data={data} />
-              <TileManager data={data} />
-            </Ui.FullHeight>
-          </HasSlackTeam>
-        )}
-      </Loader>
+      <Connect query={query(HomeQuery)}>{data => console.log("data", data) || <h1>hi</h1>}</Connect>
     );
+    // return (
+    //   <Loader url="/public/home">
+    //     {data => (
+    //       <HasSlackTeam data={data}>
+    //         <Ui.FullHeight>
+    //           <AuthBar data={data} />
+    //           <TileManager data={data} />
+    //         </Ui.FullHeight>
+    //       </HasSlackTeam>
+    //     )}
+    //   </Loader>
+    // );
   }
 };
 

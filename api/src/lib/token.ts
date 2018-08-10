@@ -14,7 +14,7 @@ export const sha = (secret: string) =>
 const getVerifiedData = async (db: DbClient, type: string, tokenStr: string) => {
   if (!tokenStr) return {ok: false, error: "no token"};
   const result = await db(
-    "select data from tokens where type=$1 and token_hash=$2 and not is_used",
+    "select data from private_schema.tokens where type=$1 and token_hash=$2 and not is_used",
     [type, sha(tokenStr)]
   );
   if (!result.rows.length) return {ok: false, error: "bad token"};
@@ -27,7 +27,7 @@ const getVerifiedData = async (db: DbClient, type: string, tokenStr: string) => 
 
 export const createAuthToken = (db: DbClient, userId: number) => {
   const token = randomstring.generate(24);
-  return db(`insert into tokens (token_hash, type, data) values ($1, $2, $3)`, [
+  return db(`insert into private_schema.tokens (token_hash, type, data) values ($1, $2, $3)`, [
     sha(token),
     "auth_token",
     {userId},
