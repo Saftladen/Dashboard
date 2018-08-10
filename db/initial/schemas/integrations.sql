@@ -8,3 +8,9 @@ create table integrations (
 
   created_at timestamp with time zone not null default now()
 );
+
+alter table integrations enable row level security;
+grant select on integrations to member, guest;
+
+create policy select_guest
+  on integrations for select to guest, member using (type = 'slack_user');
