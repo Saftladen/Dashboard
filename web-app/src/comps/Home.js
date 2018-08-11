@@ -6,6 +6,7 @@ import * as auth from "../lib/auth";
 import AuthBar from "./AuthBar";
 import TileManager from "./TileManager";
 import ConnectLoader from "./Loader";
+import gql from "fraql";
 
 const HasSlackTeam = ({data, children}) =>
   data.slackTeams.totalCount > 0 ? (
@@ -29,15 +30,15 @@ const HasSlackTeam = ({data, children}) =>
     </Ui.FullHeight>
   );
 
-const HomeQuery = `
-query {
-  slackTeams: allIntegrations(condition: {type: SLACK_TEAM}) {
-    totalCount
+const HomeQuery = gql`
+  query {
+    slackTeams: allIntegrations(condition: {type: SLACK_TEAM}) {
+      totalCount
+    }
+    currentUser {
+      name
+    }
   }
-  currentUser {
-    name
-  }
-}
 `;
 
 const Home = ({location}) => {

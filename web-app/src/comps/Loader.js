@@ -2,7 +2,7 @@ import React from "react";
 import styled, {keyframes} from "react-emotion";
 import Ui from "./Ui";
 import {Motion, spring, presets} from "react-motion";
-import {Connect, query} from "urql";
+import {Query} from "react-apollo";
 
 const rotate = keyframes`
   from: {transform: rotate(0deg)},
@@ -128,26 +128,28 @@ export class ComponentLoader extends React.Component {
 
 export default class ConnectLoader extends React.Component {
   render() {
-    const {query: q, children, onError} = this.props;
+    const {query, children, onError} = this.props;
     return (
-      <Connect query={query(q)}>
-        {({fetching, data, error, refreshAllFromCache}) => (
-          <RawLoader
-            isLoading={fetching}
-            error={
-              error && onError && onError[error.status]
-                ? React.createElement(onError[error.status], {})
-                : error && (
-                    <span>
-                      <b>{error.status}</b> {error.message}
-                    </span>
-                  )
-            }
-          >
-            {data && (style => children(style, data, refreshAllFromCache))}
-          </RawLoader>
-        )}
-      </Connect>
+      <Query query={query}>
+        {({loading, data, error}) =>
+          console.log({loading, data, error}) || (
+            <RawLoader
+              isLoading={loading}
+              error={
+                error && onError && onError[error.status]
+                  ? React.createElement(onError[error.status], {})
+                  : error && (
+                      <span>
+                        <b>{error.status}</b> {error.message}
+                      </span>
+                    )
+              }
+            >
+              {!loading && !error && (style => children(style, data))}
+            </RawLoader>
+          )
+        }
+      </Query>
     );
   }
 }
