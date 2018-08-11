@@ -1,8 +1,8 @@
 import React from "react";
-import Fetch from "./Fetch";
 import styled, {keyframes} from "react-emotion";
 import Ui from "./Ui";
 import {Motion, spring, presets} from "react-motion";
+import {Connect, query} from "urql";
 
 const rotate = keyframes`
   from: {transform: rotate(0deg)},
@@ -83,13 +83,11 @@ export class RawLoader extends React.Component {
         }}
       >
         {({spinnerPresence}) => (
-          <Ui.FullHeight>
+          <React.Fragment>
             {this.renderLoading(spinnerPresence)}
             {error && this.renderError(error, spinnerPresence)}
-            {children && (
-              <Ui.FullHeight style={{opacity: 1 - spinnerPresence}}>{children}</Ui.FullHeight>
-            )}
-          </Ui.FullHeight>
+            {children && children({opacity: 1 - spinnerPresence})}
+          </React.Fragment>
         )}
       </Motion>
     );
@@ -121,23 +119,24 @@ export class ComponentLoader extends React.Component {
     const {loadedComp: Comp, error} = this.state;
     return (
       <RawLoader isLoading={!Comp} error={error}>
-        {Comp && <Comp {...this.props.props} />}
+        {Comp &&
+          (style => <Comp {...this.props.props} style={{...style, ...this.props.props.style}} />)}
       </RawLoader>
     );
   }
 }
 
-export default class FetchLoader extends React.Component {
+export default class ConnectLoader extends React.Component {
   render() {
-    const {url, children, onError} = this.props;
+    const {query: q, children, onError} = this.props;
     return (
-      <Fetch url={url}>
-        {({isLoading, data, error, clearCache}) => (
+      <Connect query={query(q)}>
+        {({fetching, data, error, refreshAllFromCache}) => (
           <RawLoader
-            isLoading={isLoading}
+            isLoading={fetching}
             error={
               error && onError && onError[error.status]
-                ? null
+                ? React.createElement(onError[error.status], {})
                 : error && (
                     <span>
                       <b>{error.status}</b> {error.message}
@@ -145,14 +144,10 @@ export default class FetchLoader extends React.Component {
                   )
             }
           >
-            {data && children(data, clearCache)}
-            {error &&
-              onError &&
-              onError[error.status] &&
-              React.createElement(onError[error.status], {})}
+            {data && (style => children(style, data, refreshAllFromCache))}
           </RawLoader>
         )}
-      </Fetch>
+      </Connect>
     );
   }
 }

@@ -51,8 +51,8 @@ const Container = styled("div")({
 
 const Admin = () => (
   <Loader url="/admin/home" onError={{401: ShowLogin}}>
-    {data => (
-      <Container>
+    {(style, data) => (
+      <Container style={style}>
         <Ui.H1>Admin</Ui.H1>
         <AddCountdown />
       </Container>

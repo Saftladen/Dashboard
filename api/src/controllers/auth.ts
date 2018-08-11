@@ -10,8 +10,19 @@ enum Type {
   SlackUser = "slack_user",
 }
 
-const createIntegration = (db: DbClient, type: Type, userId: number | null, data: any) =>
-  db("insert into integrations (type, user_id, data) VALUES ($1, $2, $3)", [type, userId, data]);
+const createIntegration = (
+  db: DbClient,
+  type: Type,
+  userId: number | null,
+  data: any,
+  publicData: any
+) =>
+  db("insert into integrations (type, user_id, data, public_data) VALUES ($1, $2, $3, $4)", [
+    type,
+    userId,
+    data,
+    publicData,
+  ]);
 
 const getTeamData = (db: DbClient) =>
   db("select data from integrations where type=$1 and user_id is null", [Type.SlackTeam]).then(
@@ -31,7 +42,7 @@ const authController: fastify.Plugin<Server, IncomingMessage, ServerResponse, {}
 ) => {
   connectPg(instance);
 
-  instance.post("/slack-auth", async request => {
+  instance.get("/integrations/slack/oauth", async (request, response) => {
     const {data} = await axios.post(
       "https://slack.com/api/oauth.access",
       {},
@@ -45,22 +56,23 @@ const authController: fastify.Plugin<Server, IncomingMessage, ServerResponse, {}
     );
     if (data.ok) {
       if (request.query.state === "team") {
-        await createIntegration(request.db, Type.SlackTeam, null, data);
+        await createIntegration(request.db, Type.SlackTeam, null, data, {teamName: data.team_name});
       } else {
         const teamData = await getTeamData(request.db);
         if (teamData === data.team.id) {
           const userId = await createOrUpdateUser(request.db, data);
           const [authToken] = await Promise.all([
             createAuthToken(request.db, userId),
-            createIntegration(request.db, Type.SlackUser, userId, data),
+            createIntegration(request.db, Type.SlackUser, userId, data, {}),
           ]);
           return {authToken};
         } else {
-          return Promise.reject(`Only for ${teamData.team_name} members!`);
+          return Promise.reject({status: 403, error: `Only for ${teamData.team_name} members!`});
         }
       }
+      return response.redirect(303, `${process.env.CLIENT_HOST}/`);
     } else {
-      return Promise.reject(data.error);
+      return Promise.reject({status: 500, error: data.error});
     }
   });
 

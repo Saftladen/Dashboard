@@ -5,10 +5,10 @@ import qs from "qs";
 import * as auth from "../lib/auth";
 import AuthBar from "./AuthBar";
 import TileManager from "./TileManager";
-import {Connect, query} from "urql";
+import ConnectLoader from "./Loader";
 
 const HasSlackTeam = ({data, children}) =>
-  data.hasSlackTeam ? (
+  data.slackTeams.totalCount > 0 ? (
     children
   ) : (
     <Ui.FullHeight css={{minHeight: "100vh", alignItems: "center", justifyContent: "center"}}>
@@ -31,6 +31,9 @@ const HasSlackTeam = ({data, children}) =>
 
 const HomeQuery = `
 query {
+  slackTeams: allIntegrations(condition: {type: SLACK_TEAM}) {
+    totalCount
+  }
   currentUser {
     name
   }
@@ -44,20 +47,17 @@ const Home = ({location}) => {
     return <Redirect to="/" />;
   } else {
     return (
-      <Connect query={query(HomeQuery)}>{data => console.log("data", data) || <h1>hi</h1>}</Connect>
+      <ConnectLoader query={HomeQuery}>
+        {(style, data) => (
+          <HasSlackTeam data={data}>
+            <Ui.FullHeight style={style}>
+              <AuthBar data={data} />
+              <TileManager data={data} />
+            </Ui.FullHeight>
+          </HasSlackTeam>
+        )}
+      </ConnectLoader>
     );
-    // return (
-    //   <Loader url="/public/home">
-    //     {data => (
-    //       <HasSlackTeam data={data}>
-    //         <Ui.FullHeight>
-    //           <AuthBar data={data} />
-    //           <TileManager data={data} />
-    //         </Ui.FullHeight>
-    //       </HasSlackTeam>
-    //     )}
-    //   </Loader>
-    // );
   }
 };
 
