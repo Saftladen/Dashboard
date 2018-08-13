@@ -9,5 +9,3 @@ create table integrations (
 
   created_at timestamp with time zone not null default now()
 );
-
-grant select (id, type, user_id, public_data) on integrations to member, guest;

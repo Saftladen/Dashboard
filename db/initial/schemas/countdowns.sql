@@ -6,6 +6,3 @@ create table countdowns (
   created_at timestamp with time zone not null default now()
 );
 
-alter table countdowns enable row level security;
-grant select on countdowns to member, guest;
-
