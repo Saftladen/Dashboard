@@ -38,6 +38,7 @@ const HomeQuery = gql`
     currentUser {
       name
     }
+    ${TileManager.fragment}
   }
 `;
 

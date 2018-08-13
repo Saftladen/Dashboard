@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "react-emotion";
 import Countdown from "./tiles/Countdown";
+import gql from "fraql";
 
 const getRelativeScores = inputPlacements => {
   const placements = inputPlacements.map((p, i) => ({
@@ -306,5 +307,17 @@ const TileManager = ({data}) => {
     </Container>
   );
 };
+TileManager.fragment = gql`
+  fragment _ on Query {
+    currentPlacements: allVwTopPlacements(first: 12, condition: {isPrivate: false}) {
+      nodes {
+        currentScore
+        creatorId
+        isPrivate
+        countdownId
+      }
+    }
+  }
+`;
 
 export default TileManager;
