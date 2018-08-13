@@ -9,7 +9,7 @@ import ConnectLoader from "./Loader";
 import gql from "fraql";
 
 const HasSlackTeam = ({data, children}) =>
-  data.slackTeams.totalCount > 0 ? (
+  data.teamIntegration ? (
     children
   ) : (
     <Ui.FullHeight css={{minHeight: "100vh", alignItems: "center", justifyContent: "center"}}>
@@ -32,10 +32,7 @@ const HasSlackTeam = ({data, children}) =>
 
 const HomeQuery = gql`
   query {
-    slackTeams: allIntegrations(condition: {type: SLACK_TEAM}) {
-      totalCount
-    }
-    currentUser {
+    teamIntegration {
       name
     }
     ${TileManager.fragment}

@@ -6,7 +6,7 @@ import gql from "fraql";
 const getRelativeScores = inputPlacements => {
   const placements = inputPlacements.map((p, i) => ({
     p,
-    modScore: p.current_score < 0 ? -Math.log(-p.current_score + 1) : p.current_score,
+    modScore: p.currentScore < 0 ? -Math.log(-p.currentScore + 1) : p.currentScore,
   }));
   const min =
     placements.reduce((m, p) => (p.modScore < m ? p.modScore : m), Number.POSITIVE_INFINITY) - 1;
@@ -286,7 +286,8 @@ const getComponent = p => {
 };
 
 const TileManager = ({data}) => {
-  const relPlacements = getRelativeScores(data.placements);
+  if (!data.topPlacements.length) return "no tiles yet";
+  const relPlacements = getRelativeScores(data.topPlacements);
   relPlacements.sort((a, b) => (a.modScore > b.modScore ? -1 : a.modScore < b.modScore ? 1 : 0));
   assignTileCounts(
     relPlacements,
@@ -307,15 +308,13 @@ const TileManager = ({data}) => {
     </Container>
   );
 };
+TileManager.fragment = "";
 TileManager.fragment = gql`
   fragment _ on Query {
-    currentPlacements: allVwTopPlacements(first: 12, condition: {isPrivate: false}) {
-      nodes {
-        currentScore
-        creatorId
-        isPrivate
-        countdownId
-      }
+    topPlacements(first: 12) {
+      id
+      currentScore
+      isPrivate
     }
   }
 `;

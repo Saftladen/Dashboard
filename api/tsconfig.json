@@ -2,7 +2,7 @@
   "compilerOptions": {
     "module": "commonjs",
     "target": "ES2017",
-    "lib": ["es2017"],
+    "lib": ["es2018", "esnext.asynciterable"],
     "noImplicitAny": true,
     "noImplicitThis": true,
     "moduleResolution": "node",
