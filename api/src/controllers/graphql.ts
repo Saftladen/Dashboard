@@ -9,6 +9,8 @@ import {
   GraphQLInt,
   GraphQLList,
   GraphQLNonNull,
+  formatError,
+  GraphQLError,
 } from "graphql";
 const graphqlHTTP = require("express-graphql");
 const fpPlugin = require("fastify-plugin");
@@ -16,21 +18,23 @@ import {TeamIntegration} from "../models/Integration";
 import {DbClient} from "types";
 import {enhancedQuery} from "../lib/query-logger";
 import {TopPlacements} from "../models/Placements";
+import {User} from "../models/User";
 
-const monsterResolver: GraphQLFieldResolver<any, {db: DbClient; currentUserId: number | null}> = (
+type Ctx = {db: DbClient; currentUserId: number | null};
+
+const defaultQueryDbFn = (context: Ctx) => async (sql: string) => (await context.db(sql)).rows;
+
+const monsterResolver: (
+  fn?: (c: Ctx) => (sql: string) => Promise<any>
+) => GraphQLFieldResolver<any, Ctx> = (queryDbFn = defaultQueryDbFn) => (
   parent,
   args,
   context,
   resolveInfo
 ) => {
-  return joinMonster(
-    resolveInfo,
-    {currentUserId: context.currentUserId},
-    async (sql: string) => {
-      return (await context.db(sql)).rows;
-    },
-    {dialect: "pg"}
-  );
+  return joinMonster(resolveInfo, {currentUserId: context.currentUserId}, queryDbFn(context), {
+    dialect: "pg",
+  });
 };
 
 export const QueryRoot = new GraphQLObjectType({
@@ -39,7 +43,14 @@ export const QueryRoot = new GraphQLObjectType({
     teamIntegration: {
       type: TeamIntegration,
       where: (table, args, context) => `${table}.type = 'slack_team'`,
-      resolve: monsterResolver,
+      resolve: monsterResolver(),
+    },
+    currentUser: {
+      type: User,
+      where: (table, args, context) => `${table}.id = ${context.currentUserId}`,
+      resolve: monsterResolver(
+        ctx => (ctx.currentUserId ? defaultQueryDbFn(ctx) : () => Promise.resolve([]))
+      ),
     },
     topPlacements: {
       type: new GraphQLNonNull(new GraphQLList(TopPlacements)),
@@ -53,7 +64,7 @@ export const QueryRoot = new GraphQLObjectType({
       where: (table, args, context) =>
         context.currentUserId ? undefined : `not ${table}.is_private`,
       orderBy: {current_score: "desc"},
-      resolve: monsterResolver,
+      resolve: monsterResolver(),
     },
   }),
 });
@@ -77,6 +88,10 @@ const graphqlController: fastify.Plugin<Server, IncomingMessage, ServerResponse,
         schema,
         graphiql: true,
         context,
+        formatError: (e: GraphQLError) => {
+          console.error(e);
+          return formatError(e);
+        },
       };
     })
   );

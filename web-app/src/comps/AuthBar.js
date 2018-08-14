@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "react-emotion";
 import Ui from "./Ui";
+import gql from "fraql";
 
 const bgStyle = {
   background: "rgba(255, 255, 255, 0.1)",
@@ -38,9 +39,9 @@ export const SigninWithSlack = ({height = "1.5em", css}) => (
   </a>
 );
 
-const AuthBar = ({data}) => (
+const AuthBar = ({data: {currentUser}}) => (
   <AuthBarContainer>
-    {data.me ? (
+    {currentUser ? (
       <Ui.RawButton to="/admin" css={bgStyle}>
         <div
           css={{
@@ -49,14 +50,14 @@ const AuthBar = ({data}) => (
           }}
         >
           <img
-            alt={data.me.name}
-            src={data.me.avatar}
+            alt={currentUser.name}
+            src={currentUser.integrationData.avatarUrl}
             css={{
               height: "1.2em",
               borderRadius: "50%",
             }}
           />
-          <div css={{marginLeft: "0.4em", fontWeight: "bold"}}>{data.me.name}</div>
+          <div css={{marginLeft: "0.4em", fontWeight: "bold"}}>{currentUser.name}</div>
         </div>
       </Ui.RawButton>
     ) : (
@@ -64,5 +65,16 @@ const AuthBar = ({data}) => (
     )}
   </AuthBarContainer>
 );
+
+AuthBar.fragment = gql`
+  fragment _ on Query {
+    currentUser {
+      name
+      integrationData {
+        avatarUrl
+      }
+    }
+  }
+`;
 
 export default AuthBar;

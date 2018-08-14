@@ -21,8 +21,10 @@
     "fastify-plugin": "^1.2.0",
     "fastify-postgres": "^1.0.0",
     "graphql": "^0.13.2",
+    "graphql-iso-date": "^3.5.0",
     "join-monster": "^2.0.16",
     "pg": "^7.4.3",
+    "querystring": "^0.2.0",
     "randomstring": "^1.1.5",
     "source-map-support": "^0.5.8"
   },
@@ -30,6 +32,7 @@
     "@types/cors": "^2.8.4",
     "@types/dotenv": "^4.0.3",
     "@types/graphql": "^0.13.4",
+    "@types/graphql-iso-date": "^3.3.0",
     "@types/lodash": "^4.14.116",
     "@types/node": "^10.5.7",
     "@types/pg": "^7.4.10",

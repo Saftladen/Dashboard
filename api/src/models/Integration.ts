@@ -23,9 +23,9 @@ export const UserIntegration = new GraphQLObjectType({
     id: {
       type: new GraphQLNonNull(GraphQLInt),
     },
-    name: {
+    avatarUrl: {
       type: new GraphQLNonNull(GraphQLString),
-      sqlExpr: (table, args) => `(${table}.public_data->>'teamName')`,
+      sqlExpr: (table, args) => `(${table}.public_data->>'avatarUrl')`,
     },
   }),
 });

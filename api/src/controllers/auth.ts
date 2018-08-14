@@ -3,6 +3,7 @@ import {Server, IncomingMessage, ServerResponse} from "http";
 import connectPg from "../middlewares/pg";
 import axios from "axios";
 import {DbClient} from "types";
+import * as querystring from "querystring";
 import {createAuthToken} from "../lib/token";
 
 enum Type {
@@ -59,13 +60,18 @@ const authController: fastify.Plugin<Server, IncomingMessage, ServerResponse, {}
         await createIntegration(request.db, Type.SlackTeam, null, data, {teamName: data.team_name});
       } else {
         const teamData = await getTeamData(request.db);
-        if (teamData === data.team.id) {
+        if (teamData.team_id === data.team.id) {
           const userId = await createOrUpdateUser(request.db, data);
           const [authToken] = await Promise.all([
             createAuthToken(request.db, userId),
-            createIntegration(request.db, Type.SlackUser, userId, data, {}),
+            createIntegration(request.db, Type.SlackUser, userId, data, {
+              avatarUrl: data.user.image_192,
+            }),
           ]);
-          return {authToken};
+          return response.redirect(
+            303,
+            `${process.env.CLIENT_HOST}/?${querystring.stringify({authToken})}`
+          );
         } else {
           return Promise.reject({status: 403, error: `Only for ${teamData.team_name} members!`});
         }

@@ -35,6 +35,7 @@ const HomeQuery = gql`
     teamIntegration {
       name
     }
+    ${AuthBar.fragment}
     ${TileManager.fragment}
   }
 `;

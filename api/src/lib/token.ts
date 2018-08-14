@@ -14,7 +14,7 @@ export const sha = (secret: string) =>
 const getVerifiedData = async (db: DbClient, type: string, tokenStr: string) => {
   if (!tokenStr) return {ok: false, error: "no token"};
   const result = await db(
-    "select data from tokens where type=$1 and token_hash=$2 and not is_used",
+    "select data, created_at from tokens where type=$1 and token_hash=$2 and not is_used",
     [type, sha(tokenStr)]
   );
   if (!result.rows.length) return {ok: false, error: "bad token"};

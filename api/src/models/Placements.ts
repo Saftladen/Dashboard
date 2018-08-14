@@ -1,4 +1,5 @@
 import {GraphQLObjectType, GraphQLInt, GraphQLNonNull, GraphQLBoolean, GraphQLFloat} from "graphql";
+import {Countdown} from "./tiles/Countdown";
 
 export const TopPlacements = new GraphQLObjectType({
   name: "TopPlacements",
@@ -15,6 +16,13 @@ export const TopPlacements = new GraphQLObjectType({
     currentScore: {
       sqlColumn: "current_score",
       type: new GraphQLNonNull(GraphQLFloat),
+    },
+    countdown: {
+      type: Countdown,
+      sqlBatch: {
+        thisKey: "countdown_id",
+        parentKey: "id",
+      },
     },
   }),
 });
