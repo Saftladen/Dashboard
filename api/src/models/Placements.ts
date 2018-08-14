@@ -20,8 +20,8 @@ export const TopPlacements = new GraphQLObjectType({
     countdown: {
       type: Countdown,
       sqlBatch: {
-        thisKey: "countdown_id",
-        parentKey: "id",
+        thisKey: "id",
+        parentKey: "countdown_id",
       },
     },
   }),

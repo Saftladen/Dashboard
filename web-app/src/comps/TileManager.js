@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "react-emotion";
 import Countdown from "./tiles/Countdown";
-import gql from "fraql";
+import gql from "graphql-tag";
 
 const getRelativeScores = inputPlacements => {
   const placements = inputPlacements.map((p, i) => ({
@@ -281,7 +281,7 @@ const Tile = styled("div")(
 );
 
 const getComponent = p => {
-  if (p.countdown_id) return <Countdown data={p.countdown} />;
+  if (p.countdown) return <Countdown data={p.countdown} />;
   return <div>Unknown Tile {JSON.stringify(p)}</div>;
 };
 
@@ -308,13 +308,17 @@ const TileManager = ({data}) => {
     </Container>
   );
 };
-TileManager.fragment = "";
 TileManager.fragment = gql`
-  fragment _ on Query {
+  fragment TileManagerQuery on Query {
     topPlacements(first: 12) {
       id
       currentScore
       isPrivate
+      countdown {
+        id
+        endsAt
+        label
+      }
     }
   }
 `;

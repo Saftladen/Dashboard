@@ -6,7 +6,7 @@ import * as auth from "../lib/auth";
 import AuthBar from "./AuthBar";
 import TileManager from "./TileManager";
 import ConnectLoader from "./Loader";
-import gql from "fraql";
+import gql from "graphql-tag";
 
 const HasSlackTeam = ({data, children}) =>
   data.teamIntegration ? (
@@ -33,11 +33,14 @@ const HasSlackTeam = ({data, children}) =>
 const HomeQuery = gql`
   query {
     teamIntegration {
+      id
       name
     }
-    ${AuthBar.fragment}
-    ${TileManager.fragment}
+    ...TileManagerQuery
+    ...AuthBarQuery
   }
+  ${TileManager.fragment}
+  ${AuthBar.fragment}
 `;
 
 const Home = ({location}) => {

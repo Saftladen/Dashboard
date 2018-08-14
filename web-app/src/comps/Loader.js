@@ -5,8 +5,8 @@ import {Motion, spring, presets} from "react-motion";
 import {Query} from "react-apollo";
 
 const rotate = keyframes`
-  from: {transform: rotate(0deg)},
-  to: {transform: rotate(360deg)},
+  from {transform: rotate(0deg);}
+  to {transform: rotate(360deg);}
 `;
 
 const SpinContainer = styled("svg")(
@@ -26,10 +26,10 @@ const SpinG = styled("g")({
 });
 
 export const Spinner = ({size = 75}) => (
-  <SpinContainer size={size} width="50" height="50" viewBox="-1 -1 39 39">
+  <SpinContainer size={size} width="50" height="50" viewBox="0 0 40 40">
     <SpinG>
-      <circle strokeOpacity=".25" cx="18" cy="18" r="18" />
-      <path strokeOpacity=".5" d="M36 18c0-9.94-8.06-18-18-18" />
+      <circle strokeOpacity=".25" cx="20" cy="20" r="18" />
+      <path strokeOpacity=".5" d="M38 20A18 18 0 0 0 20 2" />
     </SpinG>
   </SpinContainer>
 );
@@ -131,8 +131,9 @@ export default class ConnectLoader extends React.Component {
     const {query, children, onError} = this.props;
     return (
       <Query query={query}>
-        {({loading, data, error}) =>
-          console.log({loading, data, error}) || (
+        {args => {
+          const {loading, data, error} = args;
+          return (
             <RawLoader
               isLoading={loading}
               error={
@@ -147,8 +148,8 @@ export default class ConnectLoader extends React.Component {
             >
               {!loading && !error && (style => children(style, data))}
             </RawLoader>
-          )
-        }
+          );
+        }}
       </Query>
     );
   }

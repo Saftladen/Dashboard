@@ -19,8 +19,9 @@ import {DbClient} from "types";
 import {enhancedQuery} from "../lib/query-logger";
 import {TopPlacements} from "../models/Placements";
 import {User} from "../models/User";
+import Mutations from "../mutations";
 
-type Ctx = {db: DbClient; currentUserId: number | null};
+export type Ctx = {db: DbClient; currentUserId: number | null};
 
 const defaultQueryDbFn = (context: Ctx) => async (sql: string) => (await context.db(sql)).rows;
 
@@ -39,7 +40,7 @@ const monsterResolver: (
 
 export const QueryRoot = new GraphQLObjectType({
   name: "Query",
-  fields: () => ({
+  fields: {
     teamIntegration: {
       type: TeamIntegration,
       where: (table, args, context) => `${table}.type = 'slack_team'`,
@@ -66,10 +67,10 @@ export const QueryRoot = new GraphQLObjectType({
       orderBy: {current_score: "desc"},
       resolve: monsterResolver(),
     },
-  }),
+  },
 });
 
-const schema = new GraphQLSchema({query: QueryRoot});
+const schema = new GraphQLSchema({query: QueryRoot, mutation: Mutations});
 
 const graphqlController: fastify.Plugin<Server, IncomingMessage, ServerResponse, {}> = async (
   instance,

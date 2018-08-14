@@ -13,7 +13,6 @@
     "emotion": "^9.2.6",
     "fbjs": "^0.8.17",
     "formik": "^1.0.2",
-    "fraql": "^1.1.1",
     "graphql": "^0.13.2",
     "graphql-tag": "^2.9.2",
     "graphql-tools": "^3.1.1",
@@ -33,6 +32,7 @@
     "typeface-source-sans-pro": "^0.0.54"
   },
   "devDependencies": {
+    "babel-plugin-graphql-tag": "^1.6.0",
     "react-app-rewire-emotion": "^4.0.0",
     "react-app-rewired": "^2.0.0",
     "react-scripts": "2.0.0-next.66cc7a90"

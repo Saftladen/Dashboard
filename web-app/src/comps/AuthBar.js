@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "react-emotion";
 import Ui from "./Ui";
-import gql from "fraql";
+import gql from "graphql-tag";
 
 const bgStyle = {
   background: "rgba(255, 255, 255, 0.1)",
@@ -67,10 +67,12 @@ const AuthBar = ({data: {currentUser}}) => (
 );
 
 AuthBar.fragment = gql`
-  fragment _ on Query {
+  fragment AuthBarQuery on Query {
     currentUser {
+      id
       name
       integrationData {
+        id
         avatarUrl
       }
     }

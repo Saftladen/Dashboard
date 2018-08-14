@@ -1,23 +1,23 @@
 import React from "react";
-import Loader from "./Loader";
 import styled from "react-emotion";
 import Ui from "./Ui";
-import {SigninWithSlack} from "./AuthBar";
+import AuthBar, {SigninWithSlack} from "./AuthBar";
 import {Field, rules, FormWithButton} from "./Form";
+import ConnectLoader from "./Loader";
+import gql from "graphql-tag";
 
 const AddCountdown = () => (
   <FormWithButton
     buttonLabel="Create Countdown"
     rules={{label: [rules.isRequired], minutes: [rules.isRequired]}}
     initialValues={{label: "Lunch", minutes: "10"}}
-    onSubmitSend={{
-      to: "create-countdown",
-      data: value => ({
-        label: value.label,
-        isPrivate: false,
-        endsAt: new Date(new Date().getTime() + 1000 * 60 * (parseInt(value.minutes, 10) || 0)),
-      }),
-    }}
+    mutationName="addCountdown"
+    inputType="AddCountdownInput"
+    provideData={value => ({
+      label: value.label,
+      isPrivate: false,
+      endsAt: new Date(new Date().getTime() + 1000 * 60 * (parseInt(value.minutes, 10) || 0)),
+    })}
   >
     {() => (
       <React.Fragment>
@@ -49,15 +49,32 @@ const Container = styled("div")({
   margin: "0 auto",
 });
 
+const AdminQuery = gql`
+  query {
+    currentUser {
+      id
+    }
+    ...AuthBarQuery
+  }
+  ${AuthBar.fragment}
+`;
+
 const Admin = () => (
-  <Loader url="/admin/home" onError={{401: ShowLogin}}>
+  <ConnectLoader query={AdminQuery}>
     {(style, data) => (
       <Container style={style}>
-        <Ui.H1>Admin</Ui.H1>
-        <AddCountdown />
+        {data.currentUser ? (
+          <React.Fragment>
+            <AuthBar data={data} />
+            <Ui.H1>Admin</Ui.H1>
+            <AddCountdown />
+          </React.Fragment>
+        ) : (
+          <ShowLogin />
+        )}
       </Container>
     )}
-  </Loader>
+  </ConnectLoader>
 );
 
 export default Admin;
