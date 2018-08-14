@@ -1,15 +1,27 @@
 import React from "react";
 import {BrowserRouter, Switch, Route} from "react-router-dom";
-import {FetchProvider} from "./comps/Fetch";
 import {ComponentLoader} from "./comps/Loader";
+import {getToken} from "./lib/auth";
+import ApolloClient from "apollo-boost";
+import {ApolloProvider} from "react-apollo";
 
 const renderAsyncRoute = comp => props => <ComponentLoader comp={comp} props={props} />;
+
+const client = new ApolloClient({
+  uri: `${process.env.REACT_APP_API_URL}/graphql`,
+  request: operation => {
+    const token = getToken();
+    if (token) {
+      operation.setContext({headers: {"x-auth-token": token}});
+    }
+  },
+});
 
 export default class App extends React.Component {
   render() {
     return (
       <BrowserRouter>
-        <FetchProvider>
+        <ApolloProvider client={client}>
           <Switch>
             <Route
               path="/"
@@ -23,7 +35,7 @@ export default class App extends React.Component {
             />
             <Route render={() => <h1>404</h1>} />
           </Switch>
-        </FetchProvider>
+        </ApolloProvider>
       </BrowserRouter>
     );
   }

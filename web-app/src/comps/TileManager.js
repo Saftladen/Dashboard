@@ -1,11 +1,12 @@
 import React from "react";
 import styled from "react-emotion";
 import Countdown from "./tiles/Countdown";
+import gql from "graphql-tag";
 
 const getRelativeScores = inputPlacements => {
   const placements = inputPlacements.map((p, i) => ({
     p,
-    modScore: p.current_score < 0 ? -Math.log(-p.current_score + 1) : p.current_score,
+    modScore: p.currentScore < 0 ? -Math.log(-p.currentScore + 1) : p.currentScore,
   }));
   const min =
     placements.reduce((m, p) => (p.modScore < m ? p.modScore : m), Number.POSITIVE_INFINITY) - 1;
@@ -280,12 +281,13 @@ const Tile = styled("div")(
 );
 
 const getComponent = p => {
-  if (p.countdown_id) return <Countdown data={p.countdown} />;
+  if (p.countdown) return <Countdown data={p.countdown} />;
   return <div>Unknown Tile {JSON.stringify(p)}</div>;
 };
 
 const TileManager = ({data}) => {
-  const relPlacements = getRelativeScores(data.placements);
+  if (!data.topPlacements.length) return "no tiles yet";
+  const relPlacements = getRelativeScores(data.topPlacements);
   relPlacements.sort((a, b) => (a.modScore > b.modScore ? -1 : a.modScore < b.modScore ? 1 : 0));
   assignTileCounts(
     relPlacements,
@@ -306,5 +308,19 @@ const TileManager = ({data}) => {
     </Container>
   );
 };
+TileManager.fragment = gql`
+  fragment TileManagerQuery on Query {
+    topPlacements(first: 12) {
+      id
+      currentScore
+      isPrivate
+      countdown {
+        id
+        endsAt
+        label
+      }
+    }
+  }
+`;
 
 export default TileManager;
