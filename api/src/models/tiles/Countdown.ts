@@ -71,6 +71,10 @@ export const mutations: GraphQLFieldConfigMap<any, any> = {
         input.label,
         input.endsAt,
       ]);
+      await ctx.db("update placement_scores set constant_until=$2 where countdown_id=$1", [
+        input.id,
+        input.endsAt,
+      ]);
       return countdown;
     }
   ),
