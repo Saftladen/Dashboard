@@ -6,22 +6,9 @@ import Ui from "./Ui";
 import createMutation from "../lib/mutation-gql-ast";
 import {Mutation} from "react-apollo";
 
-export const Form = ({
-  provideData,
-  children,
-  mutationName,
-  inputType,
-  onUpdate,
-  rules,
-  ...rest
-}) => (
-  <Mutation
-    mutation={createMutation(mutationName, inputType)}
-    update={(cache, {data}) => {
-      if (onUpdate) onUpdate(cache, data[mutationName]);
-    }}
-  >
-    {mutate => (
+export const Form = ({provideData, children, mutationName, inputType, rules, ...rest}) => (
+  <Mutation mutation={createMutation(mutationName, inputType)}>
+    {(mutate, {client}) => (
       <Formik
         validate={
           rules
@@ -39,6 +26,7 @@ export const Form = ({
           mutate({variables: {input: provideData(values)}}).then(
             v => {
               actions.setSubmitting(false);
+              client.resetStore();
               return v;
             },
             e => {

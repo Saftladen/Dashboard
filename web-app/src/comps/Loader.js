@@ -131,25 +131,22 @@ export default class ConnectLoader extends React.Component {
     const {query, children, onError} = this.props;
     return (
       <Query query={query}>
-        {args => {
-          const {loading, data, error} = args;
-          return (
-            <RawLoader
-              isLoading={loading}
-              error={
-                error && onError && onError[error.status]
-                  ? React.createElement(onError[error.status], {})
-                  : error && (
-                      <span>
-                        <b>{error.status}</b> {error.message}
-                      </span>
-                    )
-              }
-            >
-              {!loading && !error && (style => children(style, data))}
-            </RawLoader>
-          );
-        }}
+        {({loading, data, error}) => (
+          <RawLoader
+            isLoading={loading}
+            error={
+              error && onError && onError[error.status]
+                ? React.createElement(onError[error.status], {})
+                : error && (
+                    <span>
+                      <b>{error.status}</b> {error.message}
+                    </span>
+                  )
+            }
+          >
+            {!loading && !error && (style => children(style, data))}
+          </RawLoader>
+        )}
       </Query>
     );
   }
