@@ -7,12 +7,13 @@ import {
   GraphQLEnumType,
 } from "graphql";
 import {Countdown} from "./tiles/Countdown";
+import {Media} from "./tiles/Media";
 
 const PlacementType = new GraphQLEnumType({
   name: "PlacementType",
   values: {
     COUNTDOWN: {value: "countdown"},
-    UNASSIGNED: {value: "media"},
+    MEDIA: {value: "media"},
   },
 });
 
@@ -37,10 +38,11 @@ export const TopPlacements = new GraphQLObjectType({
     },
     countdown: {
       type: Countdown,
-      sqlBatch: {
-        thisKey: "id",
-        parentKey: "countdown_id",
-      },
+      sqlJoin: (pt, ot) => `${pt}.countdown_id = ${ot}.id`,
+    },
+    media: {
+      type: Media,
+      sqlJoin: (pt, ot) => `${pt}.media_id = ${ot}.id`,
     },
   }),
 });

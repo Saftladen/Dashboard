@@ -7,11 +7,16 @@ import gql from "graphql-tag";
 import ActionButton from "./ActionButton";
 import {Value, Toggle} from "react-powerplug";
 import {AddCountdown, UpdateCountdown} from "./manage/Countdown";
+import {AddMedia, UpdateMedia} from "./manage/Media";
 
 const addInfo = [
   {
     label: "Countdown",
     AddForm: AddCountdown,
+  },
+  {
+    label: "Media",
+    AddForm: AddMedia,
   },
 ];
 
@@ -109,6 +114,24 @@ const CompByType = {
       ends at: {countdown.endsAt}
     </OverviewTile>
   ),
+  MEDIA: ({data: {media}}) => (
+    <OverviewTile
+      type="Media"
+      label={media.label}
+      deleteAction={{
+        mutationName: "deleteMedia",
+        inputType: "DeleteMediaInput",
+        data: {id: media.id},
+      }}
+      updateComp={onFinish => <UpdateMedia media={media} onFinish={onFinish} />}
+    >
+      {media.type === "IMAGE" ? (
+        <img src={media.url} alt={media.label} css={{height: "5rem"}} />
+      ) : (
+        <div>url: {media.url}</div>
+      )}
+    </OverviewTile>
+  ),
 };
 
 const Overview = ({data}) => (
@@ -144,6 +167,12 @@ const AdminQuery = gql`
         id
         endsAt
         label
+      }
+      media {
+        id
+        label
+        type
+        url
       }
     }
     ...AuthBarQuery

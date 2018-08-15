@@ -24,7 +24,7 @@ export default class Countdown extends React.Component {
   constructor(props) {
     super(props);
     // this.endsAt = toSecs(new Date()) + 1;
-    this.endsAt = toSecs(new Date(this.props.data.endsAt));
+    this.endsAt = toSecs(new Date(this.props.data.countdown.endsAt));
     const now = toSecs(new Date());
     this.state =
       this.endsAt > now
@@ -84,10 +84,12 @@ export default class Countdown extends React.Component {
   }
 
   render() {
-    const {data} = this.props;
+    const {
+      data: {countdown},
+    } = this.props;
     return (
       <div>
-        <Label>{data.label}</Label>
+        <Label>{countdown.label}</Label>
         {this.renderTime()}
       </div>
     );

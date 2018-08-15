@@ -14,9 +14,7 @@ export const User = new GraphQLObjectType({
     },
     integrationData: {
       type: UserIntegration,
-      sqlJoin(userTable, intTable) {
-        return `${userTable}.id = ${intTable}.user_id`;
-      },
+      sqlJoin: (userTable, intTable) => `${userTable}.id = ${intTable}.user_id`,
     },
   }),
 });

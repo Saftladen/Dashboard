@@ -8,6 +8,7 @@ html {
   background-color: #261c00;
   color: #fff;
   line-height: 1.2;
+  background-size: cover;
 }
 
 *,
@@ -16,6 +17,7 @@ html {
   box-sizing: inherit;
   transition-duration: inherit;
   transition-timing-function: inherit;
+  background-size: inherit;
   transition-property: none;
 }
 
@@ -47,4 +49,8 @@ h5,
 h6,
 p {
   margin: 0;
+}
+
+img {
+  max-width: 100%;
 }

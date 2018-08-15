@@ -1,4 +1,4 @@
-import {Formik, Form as FormikForm, FastField as FormikField} from "formik";
+import {Formik, Form as FormikForm, Field as FormikField} from "formik";
 import React from "react";
 import Input from "./Input";
 import spected from "spected";

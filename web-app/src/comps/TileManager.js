@@ -2,6 +2,7 @@ import React from "react";
 import styled from "react-emotion";
 import Countdown from "./tiles/Countdown";
 import gql from "graphql-tag";
+import Media from "./tiles/Media";
 
 const getRelativeScores = inputPlacements => {
   const placements = inputPlacements.map((p, i) => ({
@@ -271,7 +272,7 @@ const Tile = styled("div")(
     const wUnit = (1 / totalCols) * 100;
     const hUnit = (1 / totalRows) * 100;
     return {
-      fontSize: `${hUnit}px`,
+      fontSize: `${(rect.h * hUnit) / 2}px`,
       top: `${rect.y * hUnit}%`,
       left: `${rect.x * wUnit}%`,
       height: `${rect.h * hUnit}%`,
@@ -280,9 +281,14 @@ const Tile = styled("div")(
   }
 );
 
+const CompsByType = {
+  COUNTDOWN: Countdown,
+  MEDIA: Media,
+};
+
 const getComponent = p => {
-  if (p.countdown) return <Countdown data={p.countdown} />;
-  return <div>Unknown Tile {JSON.stringify(p)}</div>;
+  const Comp = CompsByType[p.type];
+  return Comp ? <Comp data={p} /> : <div>Unknown Tile of type {p.type}</div>;
 };
 
 const TileManager = ({data}) => {
@@ -319,6 +325,12 @@ TileManager.fragment = gql`
         id
         endsAt
         label
+      }
+      media {
+        id
+        label
+        url
+        type
       }
     }
   }
