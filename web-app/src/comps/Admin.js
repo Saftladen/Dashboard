@@ -2,44 +2,107 @@ import React from "react";
 import styled from "react-emotion";
 import Ui from "./Ui";
 import AuthBar, {SigninWithSlack} from "./AuthBar";
-import {Field, rules, FormWithButton} from "./Form";
 import ConnectLoader from "./Loader";
 import gql from "graphql-tag";
+import ActionButton from "./ActionButton";
+import {Value} from "react-powerplug";
+import {AddCountdown} from "./manage/Countdown";
 
-const AddCountdown = () => (
-  <FormWithButton
-    buttonLabel="Create Countdown"
-    rules={{label: [rules.isRequired], minutes: [rules.isRequired]}}
-    initialValues={{label: "Lunch", minutes: "10"}}
-    mutationName="addCountdown"
-    inputType="AddCountdownInput"
-    provideData={value => ({
-      label: value.label,
-      isPrivate: false,
-      endsAt: new Date(new Date().getTime() + 1000 * 60 * (parseInt(value.minutes, 10) || 0)),
-    })}
-  >
-    {() => (
+const addInfo = [
+  {
+    label: "Countdown",
+    AddForm: AddCountdown,
+  },
+];
+
+const AdderArea = () => (
+  <Value initial={null}>
+    {({value, set}) => (
       <React.Fragment>
-        <Ui.H2>Create Countdown</Ui.H2>
-        <Field name="label" label="Label" />
-        <Field name="minutes" label="Minutes to go" type="number" />
+        <Ui.Row css={{marginBottom: "1em"}}>
+          {addInfo.map(info => {
+            const isActive = value === info;
+            return (
+              <Ui.TextButton
+                key={info.label}
+                active={isActive}
+                onClick={() => set(isActive ? null : info)}
+              >
+                Add {info.label}
+              </Ui.TextButton>
+            );
+          })}
+        </Ui.Row>
+        {value && (
+          <div css={{margin: "0 0 2em"}}>
+            <value.AddForm onFinish={() => set(null)} />
+          </div>
+        )}
       </React.Fragment>
     )}
-  </FormWithButton>
+  </Value>
 );
 
-const ShowLogin = () => (
-  <Ui.FullHeight css={{minHeight: "100vh", alignItems: "center", justifyContent: "center"}}>
-    <div
-      css={{
-        marginBottom: "1em",
+const OverviewContainer = styled("div")({
+  borderLeft: "0.25em solid rgba(255,255,255,0.2)",
+  paddingLeft: "1em",
+  display: "flex",
+  alignItems: "flex-start",
+  "&:not(:last-child)": {marginBottom: "1em"},
+});
+
+const ActionArea = styled("div")({
+  marginLeft: "auto",
+});
+
+const OverviewTile = ({type, label, children, deleteAction}) => (
+  <OverviewContainer>
+    <div>
+      <Ui.Row
+        css={{alignItems: "baseline", fontSize: "1.2em", marginBottom: children ? "0.2em" : null}}
+      >
+        <div css={{textTransform: "uppercase", fontSize: "0.8em"}}>{type}</div>
+        {label && <div css={{fontWeight: "bold", marginLeft: "0.5em"}}>{label}</div>}
+      </Ui.Row>
+      {children}
+    </div>
+    <ActionArea>
+      <ActionButton
+        mutationName={deleteAction.mutationName}
+        inputType={deleteAction.inputType}
+        data={deleteAction.data}
+      >
+        Delete
+      </ActionButton>
+    </ActionArea>
+  </OverviewContainer>
+);
+
+const CompByType = {
+  COUNTDOWN: ({data: {countdown}}) => (
+    <OverviewTile
+      type="Countdown"
+      label={countdown.label}
+      deleteAction={{
+        mutationName: "deleteCountdown",
+        inputType: "DeleteCountdownInput",
+        data: {id: countdown.id},
       }}
     >
-      You're not logged in
-    </div>
-    <SigninWithSlack height="1.5em" />
-  </Ui.FullHeight>
+      ends at: {countdown.endsAt}
+    </OverviewTile>
+  ),
+};
+
+const Overview = ({data}) => (
+  <React.Fragment>
+    <Ui.H1>Admin</Ui.H1>
+    <AdderArea />
+    {data.topPlacements.map(pl => {
+      const Comp = CompByType[pl.type];
+      return Comp ? <Comp key={pl.id} data={pl} /> : `no comp for '${pl.type}'`;
+    })}
+  </React.Fragment>
 );
 
 const Container = styled("div")({
@@ -54,10 +117,34 @@ const AdminQuery = gql`
     currentUser {
       id
     }
+    topPlacements(first: 12) {
+      id
+      currentScore
+      isPrivate
+      type
+      countdown {
+        id
+        endsAt
+        label
+      }
+    }
     ...AuthBarQuery
   }
   ${AuthBar.fragment}
 `;
+
+const ShowLogin = () => (
+  <Ui.FullHeight css={{minHeight: "100vh", alignItems: "center", justifyContent: "center"}}>
+    <div
+      css={{
+        marginBottom: "1em",
+      }}
+    >
+      You're not logged in
+    </div>
+    <SigninWithSlack height="1.5em" />
+  </Ui.FullHeight>
+);
 
 const Admin = () => (
   <ConnectLoader query={AdminQuery}>
@@ -66,8 +153,7 @@ const Admin = () => (
         {data.currentUser ? (
           <React.Fragment>
             <AuthBar data={data} />
-            <Ui.H1>Admin</Ui.H1>
-            <AddCountdown />
+            <Overview data={data} />
           </React.Fragment>
         ) : (
           <ShowLogin />

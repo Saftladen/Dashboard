@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "react-emotion";
 import {Link} from "react-router-dom";
-import col from "./colors";
+import col from "../lib/colors";
 
 const FullHeight = styled("div")({
   display: "flex",
@@ -46,15 +46,25 @@ const IconButton = styled(LinkOrButton)(...rawButtonStyles, {
   },
 });
 
-const TextButton = styled(LinkOrButton)(...rawButtonStyles, {
-  color: col.accent,
-  padding: 10,
-  borderRadius: 5,
-  textTransform: "uppercase",
-  ":hover": {
-    backgroundColor: "rgba(255,255,255,0.2)",
+const TextButton = styled(LinkOrButton, {shouldForwardProp: p => p !== "active"})(
+  ...rawButtonStyles,
+  {
+    color: col.accent,
+    padding: 10,
+    borderRadius: 5,
+    textTransform: "uppercase",
+    ":hover": {
+      backgroundColor: "rgba(255,255,255,0.2)",
+    },
   },
-});
+  ({active}) =>
+    active && {
+      backgroundColor: "rgba(255,255,255,0.9)",
+      ":hover": {
+        backgroundColor: "rgba(255,255,255,1)",
+      },
+    }
+);
 
 const BorderButton = styled(LinkOrButton)(...rawButtonStyles, {
   color: col.accent,
@@ -168,6 +178,9 @@ const Arrow = styled("div")(
   })
 );
 
+const Row = styled("div")({display: "flex"});
+const Col = styled("div")({display: "flex", flexDirection: "column"});
+
 export default {
   Arrow,
   FullHeight,
@@ -179,4 +192,6 @@ export default {
   RawButton,
   H1,
   H2,
+  Row,
+  Col,
 };

@@ -1,8 +1,8 @@
 import React from "react";
 import colors from "../lib/colors";
 import styled from "react-emotion";
-import Toggler from "./Toggler";
 import {ArrowOverlay, SpawnAnchoredOverlay} from "./Overlay";
+import {Toggle} from "react-powerplug";
 
 const shadows = (col, colShadow, size = 5) =>
   [
@@ -81,8 +81,8 @@ const ErrorHintComp = styled("div")(({size = "normal"}) => ({
 }));
 
 export const ErrorHint = ({errors, forceShow, size}) => (
-  <Toggler>
-    {(isHover, toggle) => (
+  <Toggle>
+    {({on: isHover, toggle}) => (
       <SpawnAnchoredOverlay
         distanceFromAnchor={15}
         placement="top"
@@ -101,7 +101,7 @@ export const ErrorHint = ({errors, forceShow, size}) => (
         )}
       </SpawnAnchoredOverlay>
     )}
-  </Toggler>
+  </Toggle>
 );
 
 class Input extends React.Component {

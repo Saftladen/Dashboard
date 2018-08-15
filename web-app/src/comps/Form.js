@@ -6,7 +6,15 @@ import Ui from "./Ui";
 import createMutation from "../lib/mutation-gql-ast";
 import {Mutation} from "react-apollo";
 
-export const Form = ({provideData, children, mutationName, inputType, rules, ...rest}) => (
+export const Form = ({
+  provideData,
+  children,
+  mutationName,
+  inputType,
+  rules,
+  onSubmit,
+  ...rest
+}) => (
   <Mutation mutation={createMutation(mutationName, inputType)}>
     {(mutate, {client}) => (
       <Formik
@@ -23,7 +31,7 @@ export const Form = ({provideData, children, mutationName, inputType, rules, ...
             : undefined
         }
         onSubmit={(values, actions) => {
-          mutate({variables: {input: provideData(values)}}).then(
+          const p = mutate({variables: {input: provideData(values)}}).then(
             v => {
               actions.setSubmitting(false);
               client.resetStore();
@@ -35,6 +43,7 @@ export const Form = ({provideData, children, mutationName, inputType, rules, ...
               return Promise.reject(e);
             }
           );
+          if (onSubmit) onSubmit(p);
         }}
         {...rest}
       >
@@ -48,7 +57,7 @@ export const FormWithButton = ({buttonLabel, children, ...rest}) => (
   <Form {...rest}>
     {p => (
       <React.Fragment>
-        {children(p)}
+        {typeof children === "function" ? children(p) : children}
         <Ui.FullButton type="submit" disabled={p.isSubmitting}>
           Create Countdown
         </Ui.FullButton>

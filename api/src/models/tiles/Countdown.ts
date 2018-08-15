@@ -53,4 +53,21 @@ export const mutations: GraphQLFieldConfigMap<any, any> = {
       return countdown;
     }
   ),
+  deleteCountdown: createMutation(
+    Countdown,
+    new GraphQLInputObjectType({
+      name: "DeleteCountdownInput",
+      fields: {
+        id: {type: new GraphQLNonNull(GraphQLInt)},
+      },
+    }),
+    async (input, ctx) => {
+      const {
+        rows: [countdown],
+      } = await ctx.db("select * from countdowns where id=$1", [input.id]);
+      await ctx.db("delete from placement_scores where countdown_id=$1", [input.id]);
+      await ctx.db("delete from countdowns where id=$1", [input.id]);
+      return countdown;
+    }
+  ),
 };

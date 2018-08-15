@@ -7,6 +7,7 @@ import AuthBar from "./AuthBar";
 import TileManager from "./TileManager";
 import ConnectLoader from "./Loader";
 import gql from "graphql-tag";
+import {ApolloConsumer} from "../../node_modules/react-apollo";
 
 const HasSlackTeam = ({data, children}) =>
   data.teamIntegration ? (
@@ -47,7 +48,14 @@ const Home = ({location}) => {
   const q = qs.parse(location.search, {ignoreQueryPrefix: true});
   if (q && q.authToken) {
     auth.setToken(q.authToken);
-    return <Redirect to="/" />;
+    return (
+      <ApolloConsumer>
+        {client => {
+          client.resetStore();
+          return <Redirect to="/" />;
+        }}
+      </ApolloConsumer>
+    );
   } else {
     return (
       <ConnectLoader query={HomeQuery}>

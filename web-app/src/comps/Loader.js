@@ -131,7 +131,7 @@ export default class ConnectLoader extends React.Component {
     const {query, children, onError} = this.props;
     return (
       <Query query={query}>
-        {({loading, data, error}) => (
+        {({loading, data, error, client}) => (
           <RawLoader
             isLoading={loading}
             error={
@@ -144,7 +144,7 @@ export default class ConnectLoader extends React.Component {
                   )
             }
           >
-            {!loading && !error && (style => children(style, data))}
+            {!loading && !error && (style => children(style, data, client))}
           </RawLoader>
         )}
       </Query>

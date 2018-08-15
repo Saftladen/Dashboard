@@ -1,5 +1,20 @@
-import {GraphQLObjectType, GraphQLInt, GraphQLNonNull, GraphQLBoolean, GraphQLFloat} from "graphql";
+import {
+  GraphQLObjectType,
+  GraphQLInt,
+  GraphQLNonNull,
+  GraphQLBoolean,
+  GraphQLFloat,
+  GraphQLEnumType,
+} from "graphql";
 import {Countdown} from "./tiles/Countdown";
+
+const PlacementType = new GraphQLEnumType({
+  name: "PlacementType",
+  values: {
+    COUNTDOWN: {value: "countdown"},
+    UNASSIGNED: {value: "media"},
+  },
+});
 
 export const TopPlacements = new GraphQLObjectType({
   name: "TopPlacements",
@@ -16,6 +31,9 @@ export const TopPlacements = new GraphQLObjectType({
     currentScore: {
       sqlColumn: "current_score",
       type: new GraphQLNonNull(GraphQLFloat),
+    },
+    type: {
+      type: new GraphQLNonNull(PlacementType),
     },
     countdown: {
       type: Countdown,
