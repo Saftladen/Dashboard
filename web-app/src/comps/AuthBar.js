@@ -5,8 +5,9 @@ import gql from "graphql-tag";
 
 const bgStyle = {
   background: "rgba(255, 255, 255, 0.1)",
+  color: "rgba(255, 255, 255, 0.7)",
   padding: "0.4em 0.8em",
-  fontSize: "0.4em",
+  fontSize: 11,
   borderBottomLeftRadius: "0.2em",
 };
 
@@ -53,7 +54,7 @@ const AuthBar = ({data: {currentUser}}) => (
             alt={currentUser.name}
             src={currentUser.integrationData.avatarUrl}
             css={{
-              height: "1.2em",
+              height: "1em",
               borderRadius: "50%",
             }}
           />

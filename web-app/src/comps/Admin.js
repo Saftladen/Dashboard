@@ -19,7 +19,7 @@ const AdderArea = () => (
   <Value initial={null}>
     {({value, set}) => (
       <React.Fragment>
-        <Ui.Row css={{marginBottom: "1em"}}>
+        <Ui.Row css={{marginBottom: "1rem"}}>
           {addInfo.map(info => {
             const isActive = value === info;
             return (
@@ -34,7 +34,7 @@ const AdderArea = () => (
           })}
         </Ui.Row>
         {value && (
-          <div css={{margin: "0 0 2em"}}>
+          <div css={{margin: "0 0 2rem"}}>
             <value.AddForm onFinish={() => set(null)} />
           </div>
         )}
@@ -44,11 +44,11 @@ const AdderArea = () => (
 );
 
 const OverviewContainer = styled("div")({
-  borderLeft: "0.25em solid rgba(255,255,255,0.2)",
-  paddingLeft: "1em",
+  borderLeft: "0.25rem solid rgba(255,255,255,0.2)",
+  paddingLeft: "1rem",
   display: "flex",
   alignItems: "flex-start",
-  "&:not(:last-child)": {marginBottom: "1em"},
+  "&:not(:last-child)": {marginBottom: "2rem"},
 });
 
 const ActionArea = styled("div")({
@@ -61,19 +61,19 @@ const OverviewTile = ({type, label, children, deleteAction, updateComp}) => (
     {({on: isEditing, toggle, set}) => (
       <OverviewContainer>
         {isEditing ? (
-          <div css={{flex: "auto"}}>{updateComp(() => set(false))}</div>
+          <div css={{flex: "auto", marginRight: "1rem"}}>{updateComp(() => set(false))}</div>
         ) : (
           <div>
-            <Ui.Row
-              css={{
-                alignItems: "baseline",
-                fontSize: "1.2em",
-                marginBottom: children ? "0.2em" : null,
-              }}
+            <div
+              css={{textTransform: "uppercase", fontSize: "0.7rem", color: "rgba(255,255,255,0.7)"}}
             >
-              <div css={{textTransform: "uppercase", fontSize: "0.8em"}}>{type}</div>
-              {label && <div css={{fontWeight: "bold", marginLeft: "0.5em"}}>{label}</div>}
-            </Ui.Row>
+              {type}
+            </div>
+            {label && (
+              <div css={{fontWeight: "bold", marginBottom: "0.5rem", fontSize: "1.2rem"}}>
+                {label}
+              </div>
+            )}
             {children}
           </div>
         )}
@@ -125,7 +125,7 @@ const Overview = ({data}) => (
 
 const Container = styled("div")({
   padding: "2rem",
-  maxWidth: 1000,
+  maxWidth: "70rem",
   width: "100%",
   margin: "0 auto",
 });
@@ -155,19 +155,32 @@ const ShowLogin = () => (
   <Ui.FullHeight css={{minHeight: "100vh", alignItems: "center", justifyContent: "center"}}>
     <div
       css={{
-        marginBottom: "1em",
+        marginBottom: "1rem",
       }}
     >
       You're not logged in
     </div>
-    <SigninWithSlack height="1.5em" />
+    <SigninWithSlack height="1.5rem" />
   </Ui.FullHeight>
 );
+
+const BackToDashboard = styled(Ui.RawButton)({
+  position: "absolute",
+  left: 0,
+  top: 0,
+  background: "rgba(255, 255, 255, 0.1)",
+  color: "rgba(255, 255, 255, 0.7)",
+  padding: "0.4em 0.8em",
+  fontSize: 11,
+  fontWeight: "bold",
+  borderBottomRightRadius: "0.2em",
+});
 
 const Admin = () => (
   <ConnectLoader query={AdminQuery}>
     {(style, data) => (
       <Container style={style}>
+        <BackToDashboard to="/">Back To Dashboard</BackToDashboard>
         {data.currentUser ? (
           <React.Fragment>
             <AuthBar data={data} />

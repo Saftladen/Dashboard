@@ -39,7 +39,7 @@ const RawButton = styled(LinkOrButton)(...rawButtonStyles, {
 });
 
 const IconButton = styled(LinkOrButton)(...rawButtonStyles, {
-  padding: 10,
+  padding: "0.8rem",
   borderRadius: "100%",
   ":hover": {
     backgroundColor: "rgba(255,255,255,0.2)",
@@ -50,7 +50,8 @@ const TextButton = styled(LinkOrButton, {shouldForwardProp: p => p !== "active"}
   ...rawButtonStyles,
   {
     color: col.accent,
-    padding: 10,
+    padding: "0.5rem 0.8rem 0.4rem",
+    fontSize: "0.8rem",
     borderRadius: 5,
     textTransform: "uppercase",
     ":hover": {
@@ -68,7 +69,7 @@ const TextButton = styled(LinkOrButton, {shouldForwardProp: p => p !== "active"}
 
 const BorderButton = styled(LinkOrButton)(...rawButtonStyles, {
   color: col.accent,
-  padding: "15px 25px",
+  padding: "1rem 2rem",
   border: `2px solid ${col.accent}`,
   fontWeight: "bold",
   ":hover": {
@@ -83,7 +84,7 @@ const BorderButton = styled(LinkOrButton)(...rawButtonStyles, {
 const FullButton = styled(LinkOrButton)(...rawButtonStyles, {
   backgroundColor: col.accent,
   color: "#fff",
-  padding: "15px 25px",
+  padding: "1rem 1.5rem",
   fontWeight: "bold",
   fontSize: "1rem",
   ":hover": {
@@ -123,11 +124,7 @@ const Textarea = styled("textarea")(sharedInputStyle, {resize: "vertical"});
 const typesToComp = {select: "select", textarea: Textarea};
 
 const Field = ({label, name, onChange, type = "text", ...rest}) => (
-  <div
-    css={{
-      marginBottom: "2rem",
-    }}
-  >
+  <div css={{marginBottom: "2rem"}}>
     <FieldLabel htmlFor="name" type={type}>
       {label}
     </FieldLabel>
