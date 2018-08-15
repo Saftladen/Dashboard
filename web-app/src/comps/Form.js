@@ -59,7 +59,7 @@ export const FormWithButton = ({buttonLabel, children, ...rest}) => (
       <React.Fragment>
         {typeof children === "function" ? children(p) : children}
         <Ui.FullButton type="submit" disabled={p.isSubmitting}>
-          Create Countdown
+          {buttonLabel}
         </Ui.FullButton>
       </React.Fragment>
     )}

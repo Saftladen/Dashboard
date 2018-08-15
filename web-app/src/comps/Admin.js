@@ -5,8 +5,8 @@ import AuthBar, {SigninWithSlack} from "./AuthBar";
 import ConnectLoader from "./Loader";
 import gql from "graphql-tag";
 import ActionButton from "./ActionButton";
-import {Value} from "react-powerplug";
-import {AddCountdown} from "./manage/Countdown";
+import {Value, Toggle} from "react-powerplug";
+import {AddCountdown, UpdateCountdown} from "./manage/Countdown";
 
 const addInfo = [
   {
@@ -53,29 +53,45 @@ const OverviewContainer = styled("div")({
 
 const ActionArea = styled("div")({
   marginLeft: "auto",
+  flex: "none",
 });
 
-const OverviewTile = ({type, label, children, deleteAction}) => (
-  <OverviewContainer>
-    <div>
-      <Ui.Row
-        css={{alignItems: "baseline", fontSize: "1.2em", marginBottom: children ? "0.2em" : null}}
-      >
-        <div css={{textTransform: "uppercase", fontSize: "0.8em"}}>{type}</div>
-        {label && <div css={{fontWeight: "bold", marginLeft: "0.5em"}}>{label}</div>}
-      </Ui.Row>
-      {children}
-    </div>
-    <ActionArea>
-      <ActionButton
-        mutationName={deleteAction.mutationName}
-        inputType={deleteAction.inputType}
-        data={deleteAction.data}
-      >
-        Delete
-      </ActionButton>
-    </ActionArea>
-  </OverviewContainer>
+const OverviewTile = ({type, label, children, deleteAction, updateComp}) => (
+  <Toggle>
+    {({on: isEditing, toggle, set}) => (
+      <OverviewContainer>
+        {isEditing ? (
+          <div css={{flex: "auto"}}>{updateComp(() => set(false))}</div>
+        ) : (
+          <div>
+            <Ui.Row
+              css={{
+                alignItems: "baseline",
+                fontSize: "1.2em",
+                marginBottom: children ? "0.2em" : null,
+              }}
+            >
+              <div css={{textTransform: "uppercase", fontSize: "0.8em"}}>{type}</div>
+              {label && <div css={{fontWeight: "bold", marginLeft: "0.5em"}}>{label}</div>}
+            </Ui.Row>
+            {children}
+          </div>
+        )}
+        <ActionArea>
+          <Ui.TextButton active={isEditing} onClick={toggle}>
+            Edit
+          </Ui.TextButton>
+          <ActionButton
+            mutationName={deleteAction.mutationName}
+            inputType={deleteAction.inputType}
+            data={deleteAction.data}
+          >
+            Delete
+          </ActionButton>
+        </ActionArea>
+      </OverviewContainer>
+    )}
+  </Toggle>
 );
 
 const CompByType = {
@@ -88,6 +104,7 @@ const CompByType = {
         inputType: "DeleteCountdownInput",
         data: {id: countdown.id},
       }}
+      updateComp={onFinish => <UpdateCountdown countdown={countdown} onFinish={onFinish} />}
     >
       ends at: {countdown.endsAt}
     </OverviewTile>
@@ -98,6 +115,7 @@ const Overview = ({data}) => (
   <React.Fragment>
     <Ui.H1>Admin</Ui.H1>
     <AdderArea />
+    <Ui.H2>Highest scoring tiles</Ui.H2>
     {data.topPlacements.map(pl => {
       const Comp = CompByType[pl.type];
       return Comp ? <Comp key={pl.id} data={pl} /> : `no comp for '${pl.type}'`;
