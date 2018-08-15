@@ -31,6 +31,8 @@ const graphqlController: fastify.Plugin<Server, IncomingMessage, ServerResponse,
     throw new Error(schemaValidationErrors.map(e => e.message).join(".\n"));
   }
 
+  instance.register(require("fastify-cookie"));
+
   connectPg(instance);
   type CacheVal = {size: number; node: DocumentNode};
   const cache = LRU<string, CacheVal>({max: 500 * 1024, length: e => e.size});
@@ -80,6 +82,7 @@ const graphqlController: fastify.Plugin<Server, IncomingMessage, ServerResponse,
       const {query} = req.params;
       const graphiqlString = await resolveGraphiQLString(query, {
         endpointURL: "/graphql",
+        passHeader: `'x-auth-token': '${req.cookies["auth-token"]}'`,
       });
       res.type("text/html").send(graphiqlString);
     } catch (error) {

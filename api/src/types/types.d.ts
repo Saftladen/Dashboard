@@ -13,4 +13,8 @@ declare module "fastify" {
   > {}
 
   interface FastifyRequest<HttpRequest = IncomingMessage> {}
+
+  interface FastifyRequest {
+    cookies: {[name: string]: string};
+  }
 }
