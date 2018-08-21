@@ -8,6 +8,7 @@ import ActionButton from "./ActionButton";
 import {Value, Toggle} from "react-powerplug";
 import {AddCountdown, UpdateCountdown} from "./manage/Countdown";
 import {AddMedia, UpdateMedia} from "./manage/Media";
+import {AddTwitterUser, UpdateTwitterUser} from "./manage/TwitterUser";
 
 const addInfo = [
   {
@@ -17,6 +18,10 @@ const addInfo = [
   {
     label: "Media",
     AddForm: AddMedia,
+  },
+  {
+    label: "Twitter Users",
+    AddForm: AddTwitterUser,
   },
 ];
 
@@ -132,6 +137,20 @@ const CompByType = {
       )}
     </OverviewTile>
   ),
+  TWITTER_USER: ({data: {twitterUser}}) => (
+    <OverviewTile
+      type="Twitter User"
+      label={twitterUser.username}
+      deleteAction={{
+        mutationName: "deleteTwitterUser",
+        inputType: "DeleteTwitterUserInput",
+        data: {id: twitterUser.id},
+      }}
+      updateComp={onFinish => <UpdateTwitterUser twitterUser={twitterUser} onFinish={onFinish} />}
+    >
+      {twitterUser.lastTweetData && twitterUser.lastTweetData.full_text}
+    </OverviewTile>
+  ),
 };
 
 const Overview = ({data}) => (
@@ -173,6 +192,11 @@ const AdminQuery = gql`
         label
         type
         url
+      }
+      twitterUser {
+        id
+        username
+        lastTweetData
       }
     }
     ...AuthBarQuery

@@ -64,7 +64,7 @@ const graphqlController: fastify.Plugin<Server, IncomingMessage, ServerResponse,
       documentAST = cacheVal.node;
     }
     try {
-      return execute(
+      const result = await execute(
         schema,
         documentAST,
         undefined, // rootValue
@@ -72,6 +72,11 @@ const graphqlController: fastify.Plugin<Server, IncomingMessage, ServerResponse,
         variables,
         operationName
       );
+      if (result.errors) {
+        return Promise.reject({...result, status: 400});
+      } else {
+        return result;
+      }
     } catch (contextError) {
       return Promise.reject({status: 400, error: contextError});
     }

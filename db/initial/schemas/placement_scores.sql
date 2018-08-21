@@ -1,4 +1,4 @@
-create type placementtype as enum ('countdown', 'media');
+create type placementtype as enum ('countdown', 'media', 'twitter_user');
 
 create table placement_scores (
   id serial primary key,
@@ -9,6 +9,7 @@ create table placement_scores (
   type placementtype not null,
   countdown_id int references countdowns(id),
   media_id int references medias(id),
+  twitter_user_id int references twitter_users(id),
 
   creator_id int not null references users(id),
   created_at timestamp with time zone not null default now()

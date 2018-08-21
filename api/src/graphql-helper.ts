@@ -3,6 +3,8 @@ import {
   GraphQLOutputType,
   GraphQLFieldConfig,
   GraphQLFieldResolver,
+  GraphQLScalarType,
+  Kind,
 } from "graphql";
 import {DbClient} from "types";
 import joinMonster from "join-monster";
@@ -42,3 +44,24 @@ export const monsterResolver: (
     dialect: "pg",
   });
 };
+
+export const AnyType = new GraphQLScalarType({
+  name: "Object",
+  description: "Arbitrary object",
+  parseValue: (value: any) => {
+    return typeof value === "object" ? value : typeof value === "string" ? JSON.parse(value) : null;
+  },
+  serialize: (value: any) => {
+    return typeof value === "object" ? value : typeof value === "string" ? JSON.parse(value) : null;
+  },
+  parseLiteral: (ast: any) => {
+    switch (ast.kind) {
+      case Kind.STRING:
+        return JSON.parse(ast.value);
+      case Kind.OBJECT:
+        throw new Error(`Not sure what to do with OBJECT for ObjectScalarType`);
+      default:
+        return null;
+    }
+  },
+});

@@ -40,32 +40,39 @@ export const SigninWithSlack = ({height = "1.5em", css}) => (
   </a>
 );
 
-const AuthBar = ({data: {currentUser}}) => (
-  <AuthBarContainer>
-    {currentUser ? (
-      <Ui.RawButton to="/admin" css={bgStyle}>
-        <div
-          css={{
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
-          <img
-            alt={currentUser.name}
-            src={currentUser.integrationData.avatarUrl}
-            css={{
-              height: "1em",
-              borderRadius: "50%",
-            }}
-          />
-          <div css={{marginLeft: "0.4em", fontWeight: "bold"}}>{currentUser.name}</div>
-        </div>
-      </Ui.RawButton>
-    ) : (
-      <SigninWithSlack height="1em" css={bgStyle} />
-    )}
-  </AuthBarContainer>
-);
+class AuthBar extends React.PureComponent {
+  render() {
+    const {
+      data: {currentUser},
+    } = this.props;
+    return (
+      <AuthBarContainer>
+        {currentUser ? (
+          <Ui.RawButton to="/admin" css={bgStyle}>
+            <div
+              css={{
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <img
+                alt={currentUser.name}
+                src={currentUser.integrationData.avatarUrl}
+                css={{
+                  height: "1em",
+                  borderRadius: "50%",
+                }}
+              />
+              <div css={{marginLeft: "0.4em", fontWeight: "bold"}}>{currentUser.name}</div>
+            </div>
+          </Ui.RawButton>
+        ) : (
+          <SigninWithSlack height="1em" css={bgStyle} />
+        )}
+      </AuthBarContainer>
+    );
+  }
+}
 
 AuthBar.fragment = gql`
   fragment AuthBarQuery on Query {

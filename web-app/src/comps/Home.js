@@ -44,6 +44,23 @@ const HomeQuery = gql`
   ${AuthBar.fragment}
 `;
 
+class InnerHome extends React.PureComponent {
+  render() {
+    return (
+      <ConnectLoader query={HomeQuery}>
+        {(style, data) => (
+          <HasSlackTeam data={data}>
+            <Ui.FullHeight style={style}>
+              <AuthBar data={data} />
+              <TileManager data={data} />
+            </Ui.FullHeight>
+          </HasSlackTeam>
+        )}
+      </ConnectLoader>
+    );
+  }
+}
+
 const Home = ({location}) => {
   const q = qs.parse(location.search, {ignoreQueryPrefix: true});
   if (q && q.authToken) {
@@ -57,18 +74,7 @@ const Home = ({location}) => {
       </ApolloConsumer>
     );
   } else {
-    return (
-      <ConnectLoader query={HomeQuery}>
-        {(style, data) => (
-          <HasSlackTeam data={data}>
-            <Ui.FullHeight style={style}>
-              <AuthBar data={data} />
-              <TileManager data={data} />
-            </Ui.FullHeight>
-          </HasSlackTeam>
-        )}
-      </ConnectLoader>
-    );
+    return <InnerHome />;
   }
 };
 

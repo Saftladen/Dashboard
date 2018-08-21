@@ -3,6 +3,7 @@ import styled from "react-emotion";
 import Countdown from "./tiles/Countdown";
 import gql from "graphql-tag";
 import Media from "./tiles/Media";
+import TwitterUser from "./tiles/TwitterUser";
 
 const getRelativeScores = inputPlacements => {
   const placements = inputPlacements.map((p, i) => ({
@@ -284,6 +285,7 @@ const Tile = styled("div")(
 const CompsByType = {
   COUNTDOWN: Countdown,
   MEDIA: Media,
+  TWITTER_USER: TwitterUser,
 };
 
 const getComponent = p => {
@@ -291,29 +293,33 @@ const getComponent = p => {
   return Comp ? <Comp data={p} /> : <div>Unknown Tile of type {p.type}</div>;
 };
 
-const TileManager = ({data}) => {
-  if (!data.topPlacements.length) return "no tiles yet";
-  const relPlacements = getRelativeScores(data.topPlacements);
-  relPlacements.sort((a, b) => (a.modScore > b.modScore ? -1 : a.modScore < b.modScore ? 1 : 0));
-  assignTileCounts(
-    relPlacements,
-    12,
-    0,
-    p => p.modScore,
-    (p, t) => (p.tiles = t),
-    VALID_TILE_SIZES
-  );
-  assignChunks(relPlacements, [{x: 0, y: 0, w: 4, h: 3}], p => p.tiles, (p, c) => (p.rect = c));
-  return (
-    <Container>
-      {relPlacements.filter(r => r.rect).map((r, i) => (
-        <Tile key={i} rect={r.rect} totalRows={3} totalCols={4}>
-          {getComponent(r.p)}
-        </Tile>
-      ))}
-    </Container>
-  );
-};
+class TileManager extends React.PureComponent {
+  render() {
+    const {data} = this.props;
+    if (!data.topPlacements.length) return "no tiles yet";
+    const relPlacements = getRelativeScores(data.topPlacements);
+    relPlacements.sort((a, b) => (a.modScore > b.modScore ? -1 : a.modScore < b.modScore ? 1 : 0));
+    assignTileCounts(
+      relPlacements,
+      12,
+      0,
+      p => p.modScore,
+      (p, t) => (p.tiles = t),
+      VALID_TILE_SIZES
+    );
+    assignChunks(relPlacements, [{x: 0, y: 0, w: 4, h: 3}], p => p.tiles, (p, c) => (p.rect = c));
+    return (
+      <Container>
+        {relPlacements.filter(r => r.rect).map((r, i) => (
+          <Tile key={i} rect={r.rect} totalRows={3} totalCols={4}>
+            {getComponent(r.p)}
+          </Tile>
+        ))}
+      </Container>
+    );
+  }
+}
+
 TileManager.fragment = gql`
   fragment TileManagerQuery on Query {
     topPlacements(first: 12) {
@@ -331,6 +337,11 @@ TileManager.fragment = gql`
         label
         url
         type
+      }
+      twitterUser {
+        id
+        username
+        lastTweetData
       }
     }
   }

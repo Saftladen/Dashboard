@@ -5,6 +5,29 @@ import spected from "spected";
 import Ui from "./Ui";
 import createMutation from "../lib/mutation-gql-ast";
 import {Mutation} from "react-apollo";
+import colors from "../lib/colors";
+
+const ShowError = ({form: {errors}}) =>
+  errors.$global ? (
+    <div
+      css={{backgroundColor: colors.danger, color: "#fff", padding: "1rem", marginBottom: "0.5rem"}}
+    >
+      {errors.$global}
+    </div>
+  ) : null;
+
+const extractError = e => {
+  if (e.networkError && e.networkError.result) {
+    const {message} = e.networkError.result;
+    if (Array.isArray(message.errors)) {
+      return message.errors.map(innerErr => innerErr.message).join(" & ");
+    } else if (message.error) {
+      return message.error;
+    }
+  }
+  if (e.error) return e.error;
+  return e.toString();
+};
 
 export const Form = ({
   provideData,
@@ -39,7 +62,7 @@ export const Form = ({
             },
             e => {
               actions.setSubmitting(false);
-              actions.setErrors(e.error || e.toString());
+              actions.setErrors({$global: extractError(e)});
               return Promise.reject(e);
             }
           );
@@ -47,7 +70,12 @@ export const Form = ({
         }}
         {...rest}
       >
-        {p => <FormikForm>{children(p)}</FormikForm>}
+        {p => (
+          <FormikForm>
+            <ShowError form={p} />
+            {children(p)}
+          </FormikForm>
+        )}
       </Formik>
     )}
   </Mutation>

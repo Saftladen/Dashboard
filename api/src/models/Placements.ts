@@ -8,12 +8,14 @@ import {
 } from "graphql";
 import {Countdown} from "./tiles/Countdown";
 import {Media} from "./tiles/Media";
+import {TwitterUser} from "./tiles/TwitterUser";
 
 const PlacementType = new GraphQLEnumType({
   name: "PlacementType",
   values: {
     COUNTDOWN: {value: "countdown"},
     MEDIA: {value: "media"},
+    TWITTER_USER: {value: "twitter_user"},
   },
 });
 
@@ -43,6 +45,10 @@ export const TopPlacements = new GraphQLObjectType({
     media: {
       type: Media,
       sqlJoin: (pt, ot) => `${pt}.media_id = ${ot}.id`,
+    },
+    twitterUser: {
+      type: TwitterUser,
+      sqlJoin: (pt, ot) => `${pt}.twitter_user_id = ${ot}.id`,
     },
   }),
 });

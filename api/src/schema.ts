@@ -1,6 +1,7 @@
 import {GraphQLObjectType, GraphQLSchema, GraphQLNonNull, GraphQLList, GraphQLInt} from "graphql";
 import {mutations as countdownMutations} from "./models/tiles/Countdown";
 import {mutations as mediaMutations} from "./models/tiles/Media";
+import {mutations as twitterUserMutations} from "./models/tiles/TwitterUser";
 
 import {TeamIntegration} from "./models/Integration";
 import {TopPlacements} from "./models/Placements";
@@ -44,6 +45,7 @@ const Mutations = new GraphQLObjectType({
   fields: {
     ...countdownMutations,
     ...mediaMutations,
+    ...twitterUserMutations,
   },
 });
 
