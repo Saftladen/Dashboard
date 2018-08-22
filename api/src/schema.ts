@@ -61,13 +61,14 @@ const Mutations = new GraphQLObjectType({
 const ChangeType = new GraphQLObjectType({
   name: "Change",
   fields: {
-    ok: {
-      type: new GraphQLNonNull(GraphQLBoolean),
+    version: {
+      type: new GraphQLNonNull(GraphQLInt),
     },
   },
 });
 
 let isListeningActive = false;
+let changeVersion = 0;
 
 const getSubscription = (client: PoolClient | Client) => {
   const listenToChanges = async (cb: (a: any) => any) => {
@@ -75,9 +76,14 @@ const getSubscription = (client: PoolClient | Client) => {
       await client.query('LISTEN "changed"');
       isListeningActive = true;
     }
-    client.on("notification", payload => cb({ok: true}));
-    return {ready: true};
+    client.on("notification", payload => {
+      changeVersion += 1;
+      console.log("changeVersion", changeVersion);
+      cb({dataChanged: {version: changeVersion}});
+    });
+    return null;
   };
+
   return new GraphQLObjectType({
     name: "Subscription",
     fields: {

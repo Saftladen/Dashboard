@@ -9,7 +9,12 @@
   },
   "private": true,
   "dependencies": {
-    "apollo-boost": "^0.1.13",
+    "apollo-cache-inmemory": "^1.2.8",
+    "apollo-client": "^2.4.0",
+    "apollo-link": "^1.2.2",
+    "apollo-link-error": "^1.1.0",
+    "apollo-link-http": "^1.5.4",
+    "apollo-link-ws": "^1.0.8",
     "emotion": "^9.2.6",
     "fbjs": "^0.8.17",
     "formik": "^1.0.3",
@@ -30,6 +35,7 @@
     "react-router-dom": "^4.3.1",
     "resize-observer-polyfill": "^1.5.0",
     "spected": "^0.7.0",
+    "subscriptions-transport-ws": "^0.9.14",
     "typeface-source-sans-pro": "^0.0.54"
   },
   "devDependencies": {
