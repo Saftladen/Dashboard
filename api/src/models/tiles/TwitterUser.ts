@@ -64,7 +64,7 @@ const getBearerToken = async () => {
   return cachedToken;
 };
 
-const findLastTweet = async (username: string) => {
+export const findLastTweet = async (username: string) => {
   const token = await getBearerToken();
   const query = qs.stringify({
     count: 1,
