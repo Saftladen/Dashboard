@@ -1,4 +1,11 @@
-import {GraphQLObjectType, GraphQLSchema, GraphQLNonNull, GraphQLList, GraphQLInt} from "graphql";
+import {
+  GraphQLObjectType,
+  GraphQLSchema,
+  GraphQLNonNull,
+  GraphQLList,
+  GraphQLInt,
+  GraphQLBoolean,
+} from "graphql";
 import {mutations as countdownMutations} from "./models/tiles/Countdown";
 import {mutations as mediaMutations} from "./models/tiles/Media";
 import {mutations as twitterUserMutations} from "./models/tiles/TwitterUser";
@@ -7,6 +14,8 @@ import {TeamIntegration} from "./models/Integration";
 import {TopPlacements} from "./models/Placements";
 import {User} from "./models/User";
 import {monsterResolver, defaultQueryDbFn} from "./graphql-helper";
+import asyncify from "callback-to-async-iterator";
+import {PoolClient, Client} from "pg";
 
 export const QueryRoot = new GraphQLObjectType({
   name: "Query",
@@ -49,5 +58,41 @@ const Mutations = new GraphQLObjectType({
   },
 });
 
-const schema = new GraphQLSchema({query: QueryRoot, mutation: Mutations});
-export default schema;
+const ChangeType = new GraphQLObjectType({
+  name: "Change",
+  fields: {
+    ok: {
+      type: new GraphQLNonNull(GraphQLBoolean),
+    },
+  },
+});
+
+let isListeningActive = false;
+
+const getSubscription = (client: PoolClient | Client) => {
+  const listenToChanges = async (cb: (a: any) => any) => {
+    if (!isListeningActive) {
+      await client.query('LISTEN "changed"');
+      isListeningActive = true;
+    }
+    client.on("notification", payload => cb({ok: true}));
+    return {ready: true};
+  };
+  return new GraphQLObjectType({
+    name: "Subscription",
+    fields: {
+      dataChanged: {
+        type: ChangeType,
+        subscribe: () => asyncify(listenToChanges),
+      },
+    },
+  });
+};
+const getSchema = async (client: PoolClient | Client) =>
+  new GraphQLSchema({
+    query: QueryRoot,
+    mutation: Mutations,
+    subscription: await getSubscription(client),
+  });
+
+export default getSchema;

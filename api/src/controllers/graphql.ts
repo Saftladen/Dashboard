@@ -9,12 +9,15 @@ import {
   validate,
   specifiedRules,
   execute,
+  subscribe,
 } from "graphql";
 import connectPg from "../middlewares/pg";
 import * as LRU from "lru-cache";
 import {createHash} from "crypto";
 import {resolveGraphiQLString} from "apollo-server-module-graphiql";
-import schema from "../schema";
+import {SubscriptionServer} from "subscriptions-transport-ws";
+import getSchema from "../schema";
+import enhanceClient from "../lib/query-logger";
 
 const hashQuery = (query: string) =>
   createHash("sha1")
@@ -26,6 +29,14 @@ const graphqlController: fastify.Plugin<Server, IncomingMessage, ServerResponse,
   options,
   next
 ) => {
+  connectPg(instance);
+
+  const client = enhanceClient(
+    instance.log.info.bind(instance.log),
+    await instance.pg.pool.connect()
+  );
+
+  const schema = await getSchema(client);
   const schemaValidationErrors = validateSchema(schema);
   if (schemaValidationErrors.length > 0) {
     throw new Error(schemaValidationErrors.map(e => e.message).join(".\n"));
@@ -33,7 +44,6 @@ const graphqlController: fastify.Plugin<Server, IncomingMessage, ServerResponse,
 
   instance.register(require("fastify-cookie"));
 
-  connectPg(instance);
   type CacheVal = {size: number; node: DocumentNode};
   const cache = LRU<string, CacheVal>({max: 500 * 1024, length: e => e.size});
 
@@ -82,11 +92,17 @@ const graphqlController: fastify.Plugin<Server, IncomingMessage, ServerResponse,
     }
   });
 
+  new SubscriptionServer(
+    {execute, subscribe, schema},
+    {server: instance.server, path: "/subscriptions"}
+  );
+
   instance.get("/graphiql", async (req, res) => {
     try {
       const {query} = req.params;
       const graphiqlString = await resolveGraphiQLString(query, {
         endpointURL: "/graphql",
+        subscriptionsEndpoint: `${process.env.SUBSCRIPTIONS_HOST}/subscriptions`,
         passHeader: `'x-auth-token': '${req.cookies["auth-token"]}'`,
       });
       res.type("text/html").send(graphiqlString);

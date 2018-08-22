@@ -8,6 +8,8 @@ psql -h 127.0.0.1 saftboard -U saftboard <<EOF
   BEGIN;
   CREATE EXTENSION IF NOT EXISTS citext;
 
+  $(< ../views-and-functions/f_notify.sql)
+
   $(< schemas/users.sql)
   $(< schemas/tokens.sql)
   $(< schemas/integrations.sql)

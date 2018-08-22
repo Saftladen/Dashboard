@@ -14,3 +14,5 @@ create table placement_scores (
   creator_id int not null references users(id),
   created_at timestamp with time zone not null default now()
 );
+
+create trigger change_placement_scores after insert or update or delete on placement_scores for each statement execute procedure f_notify();
