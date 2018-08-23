@@ -43,8 +43,6 @@ const UserName = styled("div")({
 
 const Outer = styled(Ui.Col)({
   height: "100%",
-  justifyContent: "center",
-  alignItems: "center",
   padding: "0.5em",
 });
 
@@ -54,16 +52,18 @@ const TwitterUser = ({
   },
 }) => (
   <Outer>
-    <UserName>@{username}</UserName>
-    {data.entities.media &&
-      data.entities.media.length > 0 && (
-        <Ui.Row>
-          {data.entities.media.map(m => (
-            <Media key={m.url} media={m} />
-          ))}
-        </Ui.Row>
-      )}
-    <TweetText>{getTweetText(data)}</TweetText>
+    <div css={{margin: "auto 0"}}>
+      <UserName>@{username}</UserName>
+      {data.entities.media &&
+        data.entities.media.length > 0 && (
+          <Ui.Row>
+            {data.entities.media.map(m => (
+              <Media key={m.url} media={m} />
+            ))}
+          </Ui.Row>
+        )}
+      <TweetText>{getTweetText(data)}</TweetText>
+    </div>
   </Outer>
 );
 

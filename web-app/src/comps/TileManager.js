@@ -19,6 +19,7 @@ const Tile = styled("div")(
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
+    overflow: "hidden",
   },
   ({rect, totalRows, totalCols}) => {
     const wUnit = (1 / totalCols) * 100;

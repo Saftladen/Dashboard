@@ -3,6 +3,9 @@ import styled from "react-emotion";
 
 const ImageContainer = styled("div")({width: "100%", height: "100%"}, ({url}) => ({
   backgroundImage: `url('${url}')`,
+  backgroundSize: "contain",
+  backgroundRepeat: "no-repeat",
+  backgroundPosition: "center center",
 }));
 
 const Label = styled("div")({
