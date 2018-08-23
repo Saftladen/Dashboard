@@ -18,8 +18,11 @@ const testNumberController: fastify.Plugin<Server, IncomingMessage, ServerRespon
       headers: JSON.parse(headers),
       body,
     }).catch(e => {
-      console.log("e", e);
-      return {data: e.message, status: 500};
+      if (e.response) {
+        return {status: e.response.status || 500, data: e.response.data};
+      } else {
+        return {data: e.message, status: 500};
+      }
     });
     return {data, status};
   });

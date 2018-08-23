@@ -5,6 +5,7 @@ import gql from "graphql-tag";
 import Media from "./tiles/Media";
 import TwitterUser from "./tiles/TwitterUser";
 import buildGrid from "grid-distribute";
+import ShowNumber from "./tiles/ShowNumber";
 
 const Container = styled("div")({
   position: "relative",
@@ -38,6 +39,7 @@ const CompsByType = {
   COUNTDOWN: Countdown,
   MEDIA: Media,
   TWITTER_USER: TwitterUser,
+  SHOW_NUMBER: ShowNumber,
 };
 
 const getComponent = p => {
@@ -94,6 +96,12 @@ TileManager.fragment = gql`
         id
         username
         lastTweetData
+      }
+      showNumber {
+        id
+        label
+        lastData
+        data
       }
     }
   }
