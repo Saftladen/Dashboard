@@ -9,6 +9,7 @@ import {Value, Toggle} from "react-powerplug";
 import {AddCountdown, UpdateCountdown} from "./manage/Countdown";
 import {AddMedia, UpdateMedia} from "./manage/Media";
 import {AddTwitterUser, UpdateTwitterUser} from "./manage/TwitterUser";
+import {AddShowNumber, UpdateShowNumber} from "./manage/ShowNumber";
 
 const addInfo = [
   {
@@ -22,6 +23,10 @@ const addInfo = [
   {
     label: "Twitter Users",
     AddForm: AddTwitterUser,
+  },
+  {
+    label: "Numbers",
+    AddForm: AddShowNumber,
   },
 ];
 
@@ -151,6 +156,23 @@ const CompByType = {
       {twitterUser.lastTweetData && twitterUser.lastTweetData.full_text}
     </OverviewTile>
   ),
+  SHOW_NUMBER: ({data: {showNumber}}) => (
+    <OverviewTile
+      type="Number"
+      label={showNumber.label}
+      deleteAction={{
+        mutationName: "deleteShowNumber",
+        inputType: "DeleteShowNumberInput",
+        data: {id: showNumber.id},
+      }}
+      updateComp={onFinish => <UpdateShowNumber showNumber={showNumber} onFinish={onFinish} />}
+    >
+      {showNumber.lastData && (
+        <code css={{fontWeight: "bold", marginRight: "0.5rem"}}>{showNumber.lastData}</code>
+      )}
+      {showNumber.url}
+    </OverviewTile>
+  ),
 };
 
 const Overview = ({data}) => (
@@ -197,6 +219,16 @@ const AdminQuery = gql`
         id
         username
         lastTweetData
+      }
+      showNumber {
+        id
+        label
+        url
+        method
+        headers
+        body
+        valueExtractor
+        lastData
       }
     }
     ...AuthBarQuery

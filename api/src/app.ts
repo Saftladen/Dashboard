@@ -6,6 +6,7 @@ import {dbConfig} from "./lib/db-config";
 import * as fastifyPostgres from "fastify-postgres";
 import authController from "./controllers/auth";
 import graphqlController from "./controllers/graphql";
+import testNumberController from "./controllers/test-number";
 
 const opts: fastify.ServerOptions = {
   logger: {
@@ -47,5 +48,6 @@ app.register(fastifyPostgres, dbConfig);
 
 app.register(authController);
 app.register(graphqlController);
+app.register(testNumberController);
 
 export default app;

@@ -8,6 +8,7 @@ import {jobError} from "../lib/reportError";
 import {dbConfig} from "../lib/db-config";
 import {getCachingClient} from "../lib/caching-db-client";
 import updateTweetUsers from "./update-tweet-users";
+import updateShowNumbers from "./update-show-numbers";
 
 const dbPool = new pg.Pool(dbConfig);
 
@@ -19,9 +20,9 @@ interface Job {
 
 const jobs: Job[] = [
   {
-    name: "Refetch Tweets",
+    name: "Refetch Data",
     schedule: "*/5 * * * *",
-    job: updateTweetUsers,
+    job: async db => Promise.all([updateTweetUsers(db), updateShowNumbers(db)]),
   },
 ];
 

@@ -3,6 +3,7 @@ import colors from "../lib/colors";
 import styled from "react-emotion";
 import {ArrowOverlay, SpawnAnchoredOverlay} from "./Overlay";
 import {Toggle} from "react-powerplug";
+import AutosizeTextarea from "react-textarea-autosize";
 
 const shadows = (col, colShadow, size = 5) =>
   [
@@ -44,11 +45,19 @@ export const inputStyle = ({hasError, isFocused, size = "normal"}) => ({
   resize: "none",
   transitionProperty: "border-color, box-shadow, background-color",
   ...propsBySize[size](hasError, isFocused),
+  "::placeholder": {
+    color: "rgba(0,0,0,0.5)",
+  },
 });
 
 const StyledInput = styled("input", {
   shouldForwardProp: p => !["hasError", "isFocused", "innerRef"].includes(p),
 })(inputStyle);
+const StyledTextarea = styled(AutosizeTextarea, {
+  shouldForwardProp: p => !["hasError", "isFocused"].includes(p),
+})(inputStyle, {
+  lineHeight: 1.4,
+});
 
 const ErrorMessage = styled("div")({
   fontSize: "0.8em",
@@ -153,7 +162,11 @@ class Input extends React.Component {
 
     return (
       <div css={{position: "relative", width: "100%"}}>
-        <StyledInput type={type} {...props} />
+        {type === "textarea" ? (
+          <StyledTextarea {...props} />
+        ) : (
+          <StyledInput type={type} {...props} />
+        )}
         {errors &&
           errors.length > 0 && <ErrorHint size={size} forceShow={showError} errors={errors} />}
       </div>

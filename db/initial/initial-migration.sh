@@ -17,6 +17,7 @@ psql -h 127.0.0.1 saftboard -U saftboard <<EOF
   $(< schemas/countdowns.sql)
   $(< schemas/medias.sql)
   $(< schemas/twitter_users.sql)
+  $(< schemas/show_numbers.sql)
 
   $(< schemas/placement_scores.sql)
 

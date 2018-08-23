@@ -110,17 +110,38 @@ class ScrollToError extends React.Component {
   }
 }
 
-export const Field = ({name, ...rest}) => (
+const InnerField = ({component: Comp, handleRef, label, props, errors}) => {
+  if (typeof Comp === "string") {
+    return (
+      <React.Fragment>
+        <label>
+          {label}
+          {errors && errors.length && errors.join(", ")}
+        </label>
+        <Comp css={{marginBottom: "1em", display: "block"}} ref={handleRef} {...props} />
+      </React.Fragment>
+    );
+  } else {
+    return (
+      <React.Fragment>
+        <label>{label}</label>
+        <Comp css={{marginBottom: "1em"}} innerRef={handleRef} {...props} errors={errors} />
+      </React.Fragment>
+    );
+  }
+};
+
+export const Field = ({name, component = Input, label, ...rest}) => (
   <FormikField name={name} type={rest.type}>
     {({field, form}) => (
       <ScrollToError name={name} {...form}>
         {handleRef => (
-          <Input
-            css={{marginBottom: "1em"}}
-            innerRef={handleRef}
-            {...rest}
-            {...field}
-            errors={form.errors[name]}
+          <InnerField
+            component={component}
+            handleRef={handleRef}
+            label={label}
+            props={{...rest, ...field}}
+            errors={form.touched[name] && form.errors[name]}
           />
         )}
       </ScrollToError>

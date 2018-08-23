@@ -60,6 +60,11 @@ const authController: fastify.Plugin<Server, IncomingMessage, ServerResponse, {}
         await createIntegration(request.db, Type.SlackTeam, null, data, {teamName: data.team_name});
       } else {
         const teamData = await getTeamData(request.db);
+        if (!teamData)
+          return Promise.reject({
+            status: 500,
+            error: "Cant log in a user, since no team exists yet",
+          });
         if (teamData.team_id === data.team.id) {
           const userId = await createOrUpdateUser(request.db, data);
           const [authToken] = await Promise.all([
