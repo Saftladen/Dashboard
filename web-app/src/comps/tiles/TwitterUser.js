@@ -16,10 +16,6 @@ const getTweetText = data => {
   return React.createElement(React.Fragment, {}, ...children);
 };
 
-const TweetText = styled("div")({
-  fontSize: "0.9em",
-});
-
 const InnerMedia = ({media: {media_url_https, type}}) => {
   if (type === "photo") {
     return <img css={{maxHeight: "100%"}} src={media_url_https} alt="Twitter Media" />;
@@ -36,14 +32,20 @@ const Media = ({media}) => (
   </div>
 );
 
-const UserName = styled("div")({
-  fontWeight: "bold",
-  marginBottom: "0.5em",
-});
-
 const Outer = styled(Ui.Col)({
   height: "100%",
   padding: "0.5em",
+});
+
+const UserName = styled("div")({
+  fontWeight: "bold",
+  marginBottom: "0.5em",
+  flex: "none",
+});
+
+const TweetText = styled("div")({
+  fontSize: "0.9em",
+  flex: "none",
 });
 
 const TwitterUser = ({
@@ -52,18 +54,18 @@ const TwitterUser = ({
   },
 }) => (
   <Outer>
-    <div css={{margin: "auto 0"}}>
+    <Ui.Col css={{margin: "auto 0"}}>
       <UserName>@{username}</UserName>
       {data.entities.media &&
         data.entities.media.length > 0 && (
-          <Ui.Row>
+          <Ui.Row css={{flexShrink: 1}}>
             {data.entities.media.map(m => (
               <Media key={m.url} media={m} />
             ))}
           </Ui.Row>
         )}
       <TweetText>{getTweetText(data)}</TweetText>
-    </div>
+    </Ui.Col>
   </Outer>
 );
 

@@ -17,7 +17,7 @@ const ShowNumber = ({data: {showNumber}}) =>
       <Label>{showNumber.label}</Label>
       <NumberContainer>{showNumber.lastData}</NumberContainer>
       {showNumber.data.length > 2 && (
-        <Sparklines data={[...showNumber.data].reverse()} width={100} height={20}>
+        <Sparklines data={[...showNumber.data].reverse()} width={300} height={60}>
           <SparklinesLine color={colors.brand} />
         </Sparklines>
       )}

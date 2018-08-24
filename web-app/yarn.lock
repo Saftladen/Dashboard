@@ -4700,9 +4700,9 @@ graphql@^0.13.2:
   dependencies:
     iterall "^1.2.1"
 
-grid-distribute@^0.2.2:
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/grid-distribute/-/grid-distribute-0.2.2.tgz#25940092708cadb786a0b026693e763150ac7a17"
+grid-distribute@^0.3.1:
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/grid-distribute/-/grid-distribute-0.3.1.tgz#4a2805283bb8734c5a6cf1be48cbd4f7e13f53a1"
   dependencies:
     typedpriorityqueue "^1.0.1"
 
