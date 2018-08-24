@@ -5,6 +5,7 @@ create table placement_scores (
   score float not null,
   decay_rate float not null,
   constant_until timestamp with time zone not null default now(),
+  color text not null,
   is_private boolean not null,
   type placementtype not null,
   countdown_id int references countdowns(id),

@@ -71,12 +71,14 @@ const ActionArea = styled("div")({
   flex: "none",
 });
 
-const OverviewTile = ({type, label, children, deleteAction, updateComp}) => (
+const OverviewTile = ({type, label, children, deleteAction, updateAction}) => (
   <Toggle>
     {({on: isEditing, toggle, set}) => (
       <OverviewContainer>
         {isEditing ? (
-          <div css={{flex: "auto", marginRight: "1rem"}}>{updateComp(() => set(false))}</div>
+          <div css={{flex: "auto", marginRight: "1rem"}}>
+            <updateAction.Comp {...updateAction.props} onFinish={() => set(false)} />
+          </div>
         ) : (
           <div>
             <div
@@ -110,7 +112,7 @@ const OverviewTile = ({type, label, children, deleteAction, updateComp}) => (
 );
 
 const CompByType = {
-  COUNTDOWN: ({data: {countdown}}) => (
+  COUNTDOWN: ({data: {countdown, isPrivate, color}}) => (
     <OverviewTile
       type="Countdown"
       label={countdown.label}
@@ -119,12 +121,15 @@ const CompByType = {
         inputType: "DeleteCountdownInput",
         data: {id: countdown.id},
       }}
-      updateComp={onFinish => <UpdateCountdown countdown={countdown} onFinish={onFinish} />}
+      updateAction={{
+        Comp: UpdateCountdown,
+        props: {data: countdown, isPrivate, color},
+      }}
     >
       ends at: {countdown.endsAt}
     </OverviewTile>
   ),
-  MEDIA: ({data: {media}}) => (
+  MEDIA: ({data: {media, isPrivate, color}}) => (
     <OverviewTile
       type="Media"
       label={media.label}
@@ -133,7 +138,10 @@ const CompByType = {
         inputType: "DeleteMediaInput",
         data: {id: media.id},
       }}
-      updateComp={onFinish => <UpdateMedia media={media} onFinish={onFinish} />}
+      updateAction={{
+        Comp: UpdateMedia,
+        props: {data: media, isPrivate, color},
+      }}
     >
       {media.type === "IMAGE" ? (
         <img src={media.url} alt={media.label} css={{height: "5rem"}} />
@@ -142,7 +150,7 @@ const CompByType = {
       )}
     </OverviewTile>
   ),
-  TWITTER_USER: ({data: {twitterUser}}) => (
+  TWITTER_USER: ({data: {twitterUser, isPrivate, color}}) => (
     <OverviewTile
       type="Twitter User"
       label={twitterUser.username}
@@ -151,12 +159,15 @@ const CompByType = {
         inputType: "DeleteTwitterUserInput",
         data: {id: twitterUser.id},
       }}
-      updateComp={onFinish => <UpdateTwitterUser twitterUser={twitterUser} onFinish={onFinish} />}
+      updateAction={{
+        Comp: UpdateTwitterUser,
+        props: {data: twitterUser, isPrivate, color},
+      }}
     >
       {twitterUser.lastTweetData && twitterUser.lastTweetData.full_text}
     </OverviewTile>
   ),
-  SHOW_NUMBER: ({data: {showNumber}}) => (
+  SHOW_NUMBER: ({data: {showNumber, isPrivate, color}}) => (
     <OverviewTile
       type="Number"
       label={showNumber.label}
@@ -165,7 +176,10 @@ const CompByType = {
         inputType: "DeleteShowNumberInput",
         data: {id: showNumber.id},
       }}
-      updateComp={onFinish => <UpdateShowNumber showNumber={showNumber} onFinish={onFinish} />}
+      updateAction={{
+        Comp: UpdateShowNumber,
+        props: {data: showNumber, isPrivate, color},
+      }}
     >
       {showNumber.lastData && (
         <code css={{fontWeight: "bold", marginRight: "0.5rem"}}>{showNumber.lastData}</code>
@@ -203,6 +217,7 @@ const AdminQuery = gql`
       id
       currentScore
       isPrivate
+      color
       type
       countdown {
         id

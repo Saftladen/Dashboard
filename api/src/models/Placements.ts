@@ -5,6 +5,7 @@ import {
   GraphQLBoolean,
   GraphQLFloat,
   GraphQLEnumType,
+  GraphQLString,
 } from "graphql";
 import {Countdown} from "./tiles/Countdown";
 import {Media} from "./tiles/Media";
@@ -36,6 +37,9 @@ export const TopPlacements = new GraphQLObjectType({
     currentScore: {
       sqlColumn: "current_score",
       type: new GraphQLNonNull(GraphQLFloat),
+    },
+    color: {
+      type: new GraphQLNonNull(GraphQLString),
     },
     type: {
       type: new GraphQLNonNull(PlacementType),

@@ -80,6 +80,7 @@ TileManager.fragment = gql`
       id
       currentScore
       isPrivate
+      color
       type
       countdown {
         id

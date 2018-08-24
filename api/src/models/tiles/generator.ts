@@ -8,6 +8,7 @@ import {
   GraphQLInputFieldConfigMap,
   GraphQLInputType,
   GraphQLInt,
+  GraphQLString,
 } from "graphql";
 import {Ctx} from "../../graphql-helper";
 
@@ -51,13 +52,17 @@ export default function generateTileModel(opts: GeneratorInput) {
     {} as GraphQLInputFieldConfigMap
   );
 
+  const commonFields = {
+    isPrivate: {type: new GraphQLNonNull(GraphQLBoolean)},
+    color: {type: new GraphQLNonNull(GraphQLString)},
+  };
   const AddMutation: GraphQLFieldConfig<any, any> = {
     type: Type,
     args: {
       input: {
         type: new GraphQLInputObjectType({
           name: `Add${opts.name}Input`,
-          fields: {...inputFields, isPrivate: {type: new GraphQLNonNull(GraphQLBoolean)}},
+          fields: {...inputFields, ...commonFields},
         }),
       },
     },
@@ -83,13 +88,14 @@ export default function generateTileModel(opts: GeneratorInput) {
       const {
         rows: [data],
       } = await ctx.db(sql1, sqlVals);
-      const sql2 = `insert into placement_scores (score, decay_rate, constant_until, is_private, creator_id, ${
+      const sql2 = `insert into placement_scores (score, decay_rate, constant_until, color, is_private, creator_id, ${
         opts.placementFk
-      }, type) VALUES ($1, $2, $3, $4, $5, $6, $7)`;
+      }, type) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`;
       await ctx.db(sql2, [
         10,
         0.05,
         new Date(),
+        input.color,
         input.isPrivate,
         ctx.currentUserId,
         data.id,
@@ -105,7 +111,11 @@ export default function generateTileModel(opts: GeneratorInput) {
       input: {
         type: new GraphQLInputObjectType({
           name: `Update${opts.name}Input`,
-          fields: {id: {type: new GraphQLNonNull(GraphQLInt)}, ...inputFields},
+          fields: {
+            id: {type: new GraphQLNonNull(GraphQLInt)},
+            ...inputFields,
+            ...commonFields,
+          },
         }),
       },
     },
@@ -119,15 +129,19 @@ export default function generateTileModel(opts: GeneratorInput) {
         {} as FieldsWithValues
       );
       if (opts.modifiyUpdate) fieldsWithData = await opts.modifiyUpdate(fieldsWithData);
-      const sqlFields = Object.keys(fieldsWithData).map(k => opts.fields[k].sqlColumn || k);
+      const sqlFields = Object.keys(fieldsWithData).map(
+        k => (opts.fields[k] && opts.fields[k].sqlColumn) || k
+      );
       const sets = sqlFields.map((f, i) => `  ${f}=$${i + 2}`);
       const sqlVals = Object.values(fieldsWithData);
       const sql1 = `update ${opts.tableName} set\n${sets.join(",\n")} where id=$1 returning *`;
       const {
         rows: [data],
       } = await ctx.db(sql1, [input.id, ...sqlVals]);
-      const sql2 = `update placement_scores set constant_until=$1 where ${opts.placementFk}=$2`;
-      await ctx.db(sql2, [new Date(), data.id]);
+      const sql2 = `update placement_scores set constant_until=$1, color=$2, is_private=$3 where ${
+        opts.placementFk
+      }=$4`;
+      await ctx.db(sql2, [new Date(), input.color, input.isPrivate, data.id]);
       return data;
     },
   };
