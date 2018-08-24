@@ -22,7 +22,9 @@ const TileGradient = styled("div")({
   background: "linear-gradient(135deg, rgba(255,255,255,0.1), rgba(0,0,0,0.1))",
 });
 
-const OuterTile = styled("div")(
+const OuterTile = styled("div", {
+  shouldForwardProp: p => ["rect", "totalRows", "totalCols", "color"].indexOf(p) === -1,
+})(
   {
     position: "absolute",
     overflow: "hidden",
