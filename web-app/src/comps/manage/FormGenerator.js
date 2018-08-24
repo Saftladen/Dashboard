@@ -2,7 +2,11 @@ import React from "react";
 import {FormWithButton, rules, Field} from "../Form";
 import Ui from "../Ui";
 
-const tileColors = [{name: "Blue", value: "#47c"}, {name: "Red", value: "#c47"}];
+const tileColors = [
+  {name: "Blue", value: "#47c"},
+  {name: "Red", value: "#c47"},
+  {name: "Dark", value: "#333"},
+];
 
 const sharedFormFields = (
   <Field type="select" component="select" name="color" label="Color">

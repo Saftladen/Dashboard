@@ -15,7 +15,7 @@ const AuthBarContainer = styled("div")({
   position: "absolute",
   top: 0,
   right: 0,
-  zIndex: 1,
+  zIndex: 2,
 });
 
 export const SigninWithSlack = ({height = "1.5em", css}) => (

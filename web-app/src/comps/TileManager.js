@@ -13,16 +13,21 @@ const Container = styled("div")({
   height: "100vh",
 });
 
-const Tile = styled("div")(
+const TileGradient = styled("div")({
+  position: "absolute",
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+  background: "linear-gradient(135deg, rgba(255,255,255,0.1), rgba(0,0,0,0.1))",
+});
+
+const OuterTile = styled("div")(
   {
     position: "absolute",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
     overflow: "hidden",
   },
-  ({rect, totalRows, totalCols}) => {
+  ({rect, totalRows, totalCols, color}) => {
     const wUnit = (1 / totalCols) * 100;
     const hUnit = (1 / totalRows) * 100;
     return {
@@ -31,8 +36,27 @@ const Tile = styled("div")(
       left: `${rect.left * wUnit}%`,
       height: `${rect.height * hUnit}%`,
       width: `${rect.width * wUnit}%`,
+      backgroundColor: color,
     };
   }
+);
+
+const InnerTile = styled("div")({
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "center",
+  position: "relative",
+  zIndex: 1,
+  width: "100%",
+  height: "100%",
+});
+
+const Tile = ({rect, totalRows, totalCols, color, children}) => (
+  <OuterTile rect={rect} totalRows={totalRows} totalCols={totalCols} color={color}>
+    <TileGradient />
+    <InnerTile>{children}</InnerTile>
+  </OuterTile>
 );
 
 const CompsByType = {
@@ -65,7 +89,7 @@ class TileManager extends React.PureComponent {
     return (
       <Container>
         {placementWithPositions.map(({element, position}) => (
-          <Tile key={element.id} rect={position} totalRows={3} totalCols={4}>
+          <Tile key={element.id} rect={position} color={element.color} totalRows={3} totalCols={4}>
             {getComponent(element)}
           </Tile>
         ))}

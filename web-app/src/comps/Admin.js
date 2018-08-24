@@ -58,26 +58,36 @@ const AdderArea = () => (
   </Value>
 );
 
-const OverviewContainer = styled("div")({
-  borderLeft: "0.25rem solid rgba(255,255,255,0.2)",
-  paddingLeft: "1rem",
-  display: "flex",
-  alignItems: "flex-start",
-  "&:not(:last-child)": {marginBottom: "2rem"},
-});
+const OverviewContainer = styled("div")(
+  {
+    borderLeft: "0.25rem solid",
+    paddingLeft: "1rem",
+    display: "flex",
+    alignItems: "flex-start",
+    "&:not(:last-child)": {marginBottom: "2rem"},
+  },
+  ({color}) => ({
+    borderColor: color,
+  })
+);
 
 const ActionArea = styled("div")({
   marginLeft: "auto",
   flex: "none",
 });
 
-const OverviewTile = ({type, label, children, deleteAction, updateAction}) => (
+const OverviewTile = ({type, color, isPrivate, label, children, deleteAction, updateAction}) => (
   <Toggle>
     {({on: isEditing, toggle, set}) => (
-      <OverviewContainer>
+      <OverviewContainer color={color}>
         {isEditing ? (
           <div css={{flex: "auto", marginRight: "1rem"}}>
-            <updateAction.Comp {...updateAction.props} onFinish={() => set(false)} />
+            <updateAction.Comp
+              data={updateAction.data}
+              isPrivate={isPrivate}
+              color={color}
+              onFinish={() => set(false)}
+            />
           </div>
         ) : (
           <div>
@@ -116,15 +126,14 @@ const CompByType = {
     <OverviewTile
       type="Countdown"
       label={countdown.label}
+      isPrivate={isPrivate}
+      color={color}
       deleteAction={{
         mutationName: "deleteCountdown",
         inputType: "DeleteCountdownInput",
         data: {id: countdown.id},
       }}
-      updateAction={{
-        Comp: UpdateCountdown,
-        props: {data: countdown, isPrivate, color},
-      }}
+      updateAction={{Comp: UpdateCountdown, data: countdown}}
     >
       ends at: {countdown.endsAt}
     </OverviewTile>
@@ -133,15 +142,14 @@ const CompByType = {
     <OverviewTile
       type="Media"
       label={media.label}
+      isPrivate={isPrivate}
+      color={color}
       deleteAction={{
         mutationName: "deleteMedia",
         inputType: "DeleteMediaInput",
         data: {id: media.id},
       }}
-      updateAction={{
-        Comp: UpdateMedia,
-        props: {data: media, isPrivate, color},
-      }}
+      updateAction={{Comp: UpdateMedia, data: media}}
     >
       {media.type === "IMAGE" ? (
         <img src={media.url} alt={media.label} css={{height: "5rem"}} />
@@ -154,15 +162,14 @@ const CompByType = {
     <OverviewTile
       type="Twitter User"
       label={twitterUser.username}
+      isPrivate={isPrivate}
+      color={color}
       deleteAction={{
         mutationName: "deleteTwitterUser",
         inputType: "DeleteTwitterUserInput",
         data: {id: twitterUser.id},
       }}
-      updateAction={{
-        Comp: UpdateTwitterUser,
-        props: {data: twitterUser, isPrivate, color},
-      }}
+      updateAction={{Comp: UpdateTwitterUser, data: twitterUser}}
     >
       {twitterUser.lastTweetData && twitterUser.lastTweetData.full_text}
     </OverviewTile>
@@ -171,15 +178,14 @@ const CompByType = {
     <OverviewTile
       type="Number"
       label={showNumber.label}
+      isPrivate={isPrivate}
+      color={color}
       deleteAction={{
         mutationName: "deleteShowNumber",
         inputType: "DeleteShowNumberInput",
         data: {id: showNumber.id},
       }}
-      updateAction={{
-        Comp: UpdateShowNumber,
-        props: {data: showNumber, isPrivate, color},
-      }}
+      updateAction={{Comp: UpdateShowNumber, data: showNumber}}
     >
       {showNumber.lastData && (
         <code css={{fontWeight: "bold", marginRight: "0.5rem"}}>{showNumber.lastData}</code>
