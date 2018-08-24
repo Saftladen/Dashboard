@@ -8,7 +8,7 @@ import {
 } from "graphql";
 import Axios from "axios";
 import * as getValue from "get-value";
-import generateTileModel from "./generator";
+import generateTileModel, {FieldsWithValues} from "./generator";
 import {AnyType} from "../../graphql-helper";
 
 const HttpMethod = new GraphQLEnumType({
@@ -19,7 +19,7 @@ const HttpMethod = new GraphQLEnumType({
   },
 });
 
-const modifyData = async (fields: {[name: string]: any}) => {
+const modifyData = async (fields: FieldsWithValues) => {
   const data = await extractData(fields);
   fields.data = data ? [data] : data;
   return fields;

@@ -15,7 +15,7 @@ interface GeneratorField extends GraphQLFieldConfig<any, any> {
   editable?: boolean;
 }
 
-type FieldsWithValues = {[name: string]: any};
+export type FieldsWithValues = {[name: string]: any};
 
 interface GeneratorInput {
   name: string;

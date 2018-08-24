@@ -1,33 +1,8 @@
-import {
-  GraphQLObjectType,
-  GraphQLInt,
-  GraphQLNonNull,
-  GraphQLString,
-  GraphQLFieldConfigMap,
-  GraphQLInputObjectType,
-  GraphQLBoolean,
-} from "graphql";
-import {createMutation, AnyType} from "../../graphql-helper";
+import {GraphQLInt, GraphQLNonNull, GraphQLString} from "graphql";
+import {AnyType} from "../../graphql-helper";
 import Axios from "axios";
 import * as qs from "qs";
-
-export const TwitterUser = new GraphQLObjectType({
-  name: "TwitterUser",
-  sqlTable: "twitter_users",
-  uniqueKey: "id",
-  fields: () => ({
-    id: {
-      type: new GraphQLNonNull(GraphQLInt),
-    },
-    username: {
-      type: new GraphQLNonNull(GraphQLString),
-    },
-    lastTweetData: {
-      sqlColumn: "last_tweet_data",
-      type: AnyType,
-    },
-  }),
-});
+import generateTileModel, {FieldsWithValues} from "./generator";
 
 let cachedToken: string | null = null;
 const twitterApiErrorHandler = (e: any) => {
@@ -87,64 +62,31 @@ export const findLastTweet = async (username: string) => {
   return data.length ? data[0] : null;
 };
 
-export const mutations: GraphQLFieldConfigMap<any, any> = {
-  addTwitterUser: createMutation(
-    TwitterUser,
-    new GraphQLInputObjectType({
-      name: "AddTwitterUserInput",
-      fields: {
-        username: {type: new GraphQLNonNull(GraphQLString)},
-        isPrivate: {type: new GraphQLNonNull(GraphQLBoolean)},
-      },
-    }),
-    async (input, ctx) => {
-      const {
-        rows: [twitterUser],
-      } = await ctx.db(
-        "insert into twitter_users (username, last_tweet_data, creator_id) VALUES ($1, $2, $3) returning *",
-        [input.username, await findLastTweet(input.username), ctx.currentUserId]
-      );
-      await ctx.db(
-        "insert into placement_scores (score, decay_rate, constant_until, is_private, creator_id, twitter_user_id, type) VALUES ($1, $2, now(), $3, $4, $5, $6) returning id",
-        [10, 0.05, input.isPrivate, ctx.currentUserId, twitterUser.id, "twitter_user"]
-      );
-      return twitterUser;
-    }
-  ),
-  updateTwitterUser: createMutation(
-    TwitterUser,
-    new GraphQLInputObjectType({
-      name: "UpdateTwitterUserInput",
-      fields: {
-        id: {type: new GraphQLNonNull(GraphQLInt)},
-        username: {type: new GraphQLNonNull(GraphQLString)},
-      },
-    }),
-    async (input, ctx) => {
-      const {
-        rows: [twitterUser],
-      } = await ctx.db(
-        "update twitter_users set username=$2, last_tweet_data=$3 where id=$1 returning *",
-        [input.id, input.username, await findLastTweet(input.username)]
-      );
-      await ctx.db("update placement_scores set constant_until=now() where twitter_user_id=$1", [
-        input.id,
-      ]);
-      return twitterUser;
-    }
-  ),
-  deleteTwitterUser: createMutation(
-    TwitterUser,
-    new GraphQLInputObjectType({
-      name: "DeleteTwitterUserInput",
-      fields: {
-        id: {type: new GraphQLNonNull(GraphQLInt)},
-      },
-    }),
-    async (input, ctx) => {
-      await ctx.db("delete from placement_scores where twitter_user_id=$1", [input.id]);
-      const {rows} = await ctx.db("delete from twitter_users where id=$1 returning *", [input.id]);
-      return rows[0];
-    }
-  ),
+const modifyData = async (fields: FieldsWithValues) => {
+  fields.last_tweet_data = await findLastTweet(fields.username);
+  return fields;
 };
+
+const {Type: TwitterUser, mutations} = generateTileModel({
+  name: "TwitterUser",
+  tableName: "twitter_users",
+  placementFk: "twitter_user_id",
+  placementType: "twitter_user",
+  fields: {
+    id: {
+      type: new GraphQLNonNull(GraphQLInt),
+    },
+    username: {
+      editable: true,
+      type: new GraphQLNonNull(GraphQLString),
+    },
+    lastTweetData: {
+      sqlColumn: "last_tweet_data",
+      type: AnyType,
+    },
+  },
+  modifiyInsert: modifyData,
+  modifiyUpdate: modifyData,
+});
+
+export {TwitterUser, mutations};
