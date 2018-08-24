@@ -8,6 +8,7 @@ import {
 } from "graphql";
 import Axios from "axios";
 import * as getValue from "get-value";
+import * as equal from "fast-deep-equal";
 import generateTileModel, {FieldsWithValues} from "./generator";
 import {AnyType} from "../../graphql-helper";
 
@@ -100,7 +101,17 @@ const {Type: ShowNumber, mutations} = generateTileModel({
     },
   },
   modifiyInsert: modifyData,
-  modifiyUpdate: modifyData,
+  modifiyUpdate: async (fields, dbData) => {
+    const compData = {
+      url: fields.url,
+      method: fields.method,
+      headers: fields.headers,
+      body: fields.body,
+      value_extractor: fields.valueExtractor,
+    };
+    const isDifferent = Object.entries(compData).some(([key, val]) => !equal(val, dbData[key]));
+    return isDifferent ? modifyData(fields) : fields;
+  },
 });
 
 export {ShowNumber, mutations};

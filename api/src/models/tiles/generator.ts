@@ -25,7 +25,7 @@ interface GeneratorInput {
   placementType: string;
   fields: {[key: string]: GeneratorField};
   modifiyInsert?: (fields: FieldsWithValues) => Promise<FieldsWithValues>;
-  modifiyUpdate?: (fields: FieldsWithValues) => Promise<FieldsWithValues>;
+  modifiyUpdate?: (fields: FieldsWithValues, dbData: any) => Promise<FieldsWithValues>;
 }
 
 export default function generateTileModel(opts: GeneratorInput) {
@@ -128,7 +128,10 @@ export default function generateTileModel(opts: GeneratorInput) {
         },
         {} as FieldsWithValues
       );
-      if (opts.modifiyUpdate) fieldsWithData = await opts.modifiyUpdate(fieldsWithData);
+      if (opts.modifiyUpdate) {
+        const {rows} = await ctx.db(`select * from ${opts.tableName} where id=$1`, [input.id]);
+        fieldsWithData = await opts.modifiyUpdate(fieldsWithData, rows[0]);
+      }
       const sqlFields = Object.keys(fieldsWithData).map(
         k => (opts.fields[k] && opts.fields[k].sqlColumn) || k
       );
