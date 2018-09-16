@@ -9,7 +9,8 @@
     "tslint": "tslint -c ../tslint-strict.json -p tsconfig.json",
     "watch-node": "nodemon --delay 0.1 --watch dist dist/server.js --watch ../web-app/shared_models",
     "start": "npm run build && node dist/server.js",
-    "dev": "tsc && concurrently -k -p \"[{name}]\" -n \"ts,node\" -c \"cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run watch-node\""
+    "dev": "tsc && concurrently -k -p \"[{name}]\" -n \"ts,node\" -c \"cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run watch-node\"",
+    "deploy": "npm run build && DEPLOY_ENV_PREFIX=PROD node scripts/deploy.js"
   },
   "dependencies": {
     "apollo-server-module-graphiql": "1.3.4",
@@ -17,6 +18,7 @@
     "callback-to-async-iterator": "^1.1.1",
     "chalk": "^2.4.1",
     "cors": "^2.8.4",
+    "date-fns": "^1.29.0",
     "dotenv": "^6.0.0",
     "fast-deep-equal": "^2.0.1",
     "fastify": "^1.9.0",
@@ -29,6 +31,7 @@
     "lru-cache": "^4.1.3",
     "node-schedule": "^1.3.0",
     "pg": "^7.4.3",
+    "pretty-ms": "^3.2.0",
     "qs": "^6.5.2",
     "querystring": "^0.2.0",
     "randomstring": "^1.1.5",
@@ -37,6 +40,7 @@
     "twitter": "^1.7.1"
   },
   "devDependencies": {
+    "@danielberndt/exec": "^1.1.0",
     "@types/cors": "^2.8.4",
     "@types/dotenv": "^4.0.3",
     "@types/get-value": "^3.0.0",
@@ -55,7 +59,6 @@
     "@types/ws": "^6.0.0",
     "concurrently": "^3.6.1",
     "nodemon": "^1.18.3",
-    "pretty-ms": "^3.2.0",
     "split2": "^2.2.0",
     "tslint": "^5.11.0",
     "typescript": "^3.0.1"

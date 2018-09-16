@@ -9,16 +9,18 @@ import ConnectLoader from "./Loader";
 import gql from "graphql-tag";
 import {ApolloConsumer} from "../../node_modules/react-apollo";
 
+const slackParams = qs.stringify({
+  client_id: process.env.REACT_APP_SLACK_CLIENT_ID,
+  scope: "channels:history",
+  state: "team",
+});
+
 const HasSlackTeam = ({data, children}) =>
   data.teamIntegration ? (
     children
   ) : (
     <Ui.FullHeight css={{minHeight: "100vh", alignItems: "center", justifyContent: "center"}}>
-      <Ui.RawButton
-        href={`https://slack.com/oauth/authorize?&client_id=${
-          process.env.REACT_APP_SLACK_CLIENT_ID
-        }&scope=channels:history&state=team`}
-      >
+      <Ui.RawButton href={`https://slack.com/oauth/authorize?${slackParams}`}>
         <img
           alt="Add to Slack"
           height="40"

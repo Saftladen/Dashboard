@@ -5,7 +5,9 @@
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
     "test": "react-app-rewired test --env=jsdom",
-    "eject": "react-app-rewired eject"
+    "eject": "react-app-rewired eject",
+    "build-prod": "gulp build-prod",
+    "deploy": "npm run build-prod && gulp deploy-prod"
   },
   "private": true,
   "dependencies": {
@@ -44,7 +46,12 @@
     "typeface-source-sans-pro": "^0.0.54"
   },
   "devDependencies": {
+    "@danielberndt/exec": "^1.1.0",
     "babel-plugin-graphql-tag": "^1.6.0",
+    "concurrent-transform": "^1.0.0",
+    "gulp": "^3.9.1",
+    "gulp-awspublish": "^3.4.0",
+    "gulp-awspublish-router": "^0.1.5",
     "react-app-rewire-emotion": "^4.0.0",
     "react-app-rewired": "^2.0.0",
     "react-scripts": "2.0.0-next.66cc7a90"

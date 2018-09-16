@@ -1,0 +1,19 @@
+{
+  "apps": [
+    {
+      "name": "api",
+      "script": "dist/server.js",
+      "kill_timeout": 3000,
+      "env": {
+        "NODE_ENV": "production"
+      }
+    },
+    {
+      "name": "worker",
+      "script": "dist/jobs/index.js",
+      "env": {
+        "NODE_ENV": "production"
+      }
+    }
+  ]
+}

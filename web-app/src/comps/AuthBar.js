@@ -2,6 +2,7 @@ import React from "react";
 import styled from "react-emotion";
 import Ui from "./Ui";
 import gql from "graphql-tag";
+import qs from "qs";
 
 const bgStyle = {
   background: "rgba(255, 255, 255, 0.1)",
@@ -18,11 +19,15 @@ const AuthBarContainer = styled("div")({
   zIndex: 2,
 });
 
+const slackParams = qs.stringify({
+  client_id: process.env.REACT_APP_SLACK_CLIENT_ID,
+  scope: "identity.basic,identity.avatar",
+  state: "user",
+});
+
 export const SigninWithSlack = ({height = "1.5em", css}) => (
   <a
-    href={`https://slack.com/oauth/authorize?&client_id=${
-      process.env.REACT_APP_SLACK_CLIENT_ID
-    }&scope=identity.basic,identity.avatar&state=user`}
+    href={`https://slack.com/oauth/authorize?${slackParams}`}
     css={{
       ...css,
       display: "block",
