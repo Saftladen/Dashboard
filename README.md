@@ -74,9 +74,11 @@ psql
 # > ALTER USER saftuser WITH PASSWORD '[PW]';
 ```
 
-You can now connect to the db via a ssh tunnel which most client should offer
+You can now connect to the db via a ssh tunnel which most DB clients should offer.
 
-### Server
+The data then needs to be transferred manually.
+
+### Api Server
 
 #### Firewall
 
@@ -101,7 +103,7 @@ sudo vi /etc/nginx/conf.d/saftboardapi.conf
 sudo service nginx restart
 ```
 
-saftboardapi.conf:
+`/etc/nginx/conf.d/saftboardapi.conf`:
 
 ```conf
 server {
@@ -165,5 +167,3 @@ pm2 save
 
 as root user execute `pm2 startup` and adapt the returned command to the user above
 I.e. something like: `sudo env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u saftboardapi --hp /home/saftboardapi`
-
-### TODO: check firewall?
