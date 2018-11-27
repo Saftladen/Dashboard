@@ -51,7 +51,7 @@
     "concurrent-transform": "^1.0.0",
     "gulp": "^3.9.1",
     "gulp-awspublish": "^3.4.0",
-    "gulp-awspublish-router": "^0.1.5",
+    "gulp-awspublish-router": "^0.2.0",
     "react-app-rewire-emotion": "^4.0.0",
     "react-app-rewired": "^2.0.0",
     "react-scripts": "2.0.0-next.66cc7a90"

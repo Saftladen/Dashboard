@@ -111,7 +111,7 @@ server {
   server_name _;
 
   location /subscriptions {
-      proxy_pass http://localhost:9393;
+      proxy_pass http://localhost:9393/subscriptions;
       # this magic is needed for WebSocket
       proxy_http_version  1.1;
       proxy_set_header    Upgrade $http_upgrade;
